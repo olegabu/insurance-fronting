@@ -1,0 +1,18 @@
+<table class="table">
+  <thead>
+	  <tr>
+	    <th>from</th>
+      <th>to</th>
+      <th>amount</th>
+      <th>purpose</th>
+	  </tr>
+  </thead>
+  <tbody>
+	  <tr ng-repeat="t in ctl.list">
+      <td>{{t.from}}</td>
+      <td>{{t.to}}</td>
+      <td>{{t.amt | currency:"$":0}}</td>
+      <td>{{t.purpose}}</td>
+	  </tr>
+  </tbody>
+</table>

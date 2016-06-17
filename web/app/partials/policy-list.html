@@ -1,0 +1,134 @@
+<table class="table">
+  <thead>
+	  <tr>
+	    <th>policy</th>
+      <th>coverage</th>
+      <th>premium</th>
+      <th>fronting chain</th>
+      <th>claims</th>
+	  </tr>
+  </thead>
+  <tbody>
+	  <tr ng-repeat="p in ctl.list">
+	    <td>{{p.id}}</td>
+      <td>{{p.coverage | currency:"$":0}}</td>
+			<td>{{p.premium | currency:"$":0}}
+        <a class="btn btn-default btn-block" ng-if="ctl.canPay(p)" href
+				ng-click="ctl.openPay(p)" title="pay premium">pay</a>
+			</td>
+			<td>
+	      <dl class="dl-horizontal">
+         <dt>captive</dt>
+         <dd>{{p.supplyChain.captive}}</dd>
+         <dt>reinsurer</dt>
+         <dd>{{p.supplyChain.reinsurer}}</dd>
+         <dt>fronter</dt>
+         <dd>{{p.supplyChain.fronter}}</dd>
+         <dt>affiliate</dt>
+         <dd>{{p.supplyChain.affiliate}}</dd>
+	      </dl>
+        <a class="btn btn-default btn-block" ng-show="ctl.canJoin(p)" href 
+        ng-click="ctl.openJoin(p)" title="join fronting chain">
+        join</a>
+      </td>
+      <td>
+        <ol>
+          <li ng-repeat="c in p.claims">{{c.amt | currency:"$":0}}
+						<dl class="dl-horizontal" title="approved by">
+						 <dt>captive</dt>
+						 <dd>{{c.approvalChain.captive}}</dd>
+						 <dt>reinsurer</dt>
+						 <dd>{{c.approvalChain.reinsurer}}</dd>
+						</dl>
+            <a class="btn btn-default btn-block" href ng-show="ctl.canApprove(p, c)" 
+            ng-click="ctl.openApprove(p, c)" title="approve claim">
+            approve</a>
+          </li>
+        </ol>
+        <a class="btn btn-default btn-block" href ng-show="ctl.canClaim(p)" 
+        ng-click="ctl.openClaim(p)" title="file claim">file claim</a>
+      </td>
+	  </tr>
+  </tbody>
+</table>
+
+<script type="text/ng-template" id="join-modal.html">
+<div class="modal-header">
+<h3 class="modal-title">Join Fronting Chain</h3>
+</div>
+<div class="modal-body">
+  <dl class="dl-horizontal">
+    <dt>coverage</dt>
+    <dd>{{ctl.policy.coverage | currency:"$":0}}</dd>
+    <dt>premium</dt>
+    <dd>{{ctl.policy.premium | currency:"$":0}}</dd>
+    <dt>policy id</dt>
+    <dd>{{ctl.policy.id}}</dd>
+  </dl>
+</div>
+<div class="modal-footer">
+<button class="btn btn-primary" type="button" 
+ng-click="ctl.ok()" ng-disabled="modalForm.$invalid">Join</button>
+<button class="btn btn-warning" type="button" ng-click="ctl.cancel()">Cancel</button>
+</div>
+</script>
+
+<script type="text/ng-template" id="approve-modal.html">
+<div class="modal-header">
+<h3 class="modal-title">Approve Claim</h3>
+</div>
+<div class="modal-body">
+  <dl class="dl-horizontal">
+    <dt>amount</dt>
+    <dd>{{ctl.claim.amt | currency:"$":0}}</dd>
+  </dl>
+</div>
+<div class="modal-footer">
+<button class="btn btn-primary" type="button" 
+ng-click="ctl.ok()" ng-disabled="modalForm.$invalid">Approve</button>
+<button class="btn btn-warning" type="button" ng-click="ctl.cancel()">Cancel</button>
+</div>
+</script>
+
+<script type="text/ng-template" id="claim-modal.html">
+<form name="modalForm">
+<div class="modal-header">
+<h3 class="modal-title">File Claim</h3>
+</div>
+<div class="modal-body">
+  <div class="form-group">
+    <label>policy id</label>
+    <p class="form-control-static">{{ctl.policy.id}}</p>
+  </div>
+  <div class="form-group">
+    <label>amount</label>
+    <input class="form-control" required="required" 
+    type="number" min="0" max="{{ctl.maxClaim}}" ng-model="ctl.claim.amt">
+  </div>
+</div>
+<div class="modal-footer">
+<button class="btn btn-primary" type="submit" 
+ng-click="ctl.ok()" ng-disabled="modalForm.$invalid">Claim</button>
+<button class="btn btn-warning" type="submit" ng-click="ctl.cancel()">Cancel</button>
+</div>
+</form>
+</script>
+
+<script type="text/ng-template" id="pay-modal.html">
+<div class="modal-header">
+<h3 class="modal-title">Pay Premium</h3>
+</div>
+<div class="modal-body">
+  <dl class="dl-horizontal">
+    <dt>premium</dt>
+    <dd>{{ctl.policy.premium | currency:"$":0}}</dd>
+    <dt>policy id</dt>
+    <dd>{{ctl.policy.id}}</dd>
+  </dl>
+</div>
+<div class="modal-footer">
+<button class="btn btn-primary" type="button" 
+ng-click="ctl.ok()" ng-disabled="modalForm.$invalid">Pay</button>
+<button class="btn btn-warning" type="button" ng-click="ctl.cancel()">Cancel</button>
+</div>
+</script>

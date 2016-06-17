@@ -1,0 +1,55 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-3">
+      <h1>Insurance Fronting</h1>
+    </div><!-- /column -->
+    <div class="col-md-3">
+      <div class="panel panel-default">
+        <div class="panel-heading"><i class="fa fa-bars"></i> Menu for {{ctl.user.role}}</div>
+        <div class="panel-body">
+          <ul class="list-inline">
+            <li ng-if="ctl.user.role === 'captive'">
+            <a ui-sref-active="menu-active" 
+            ui-sref="demo.captivePolicyList">Policies</a></li>
+            <li ng-if="ctl.user.role === 'affiliate'">
+            <a ui-sref-active="menu-active" 
+            ui-sref="demo.affiliatePolicyList">Policies</a></li>
+            <li ng-if="ctl.user.role === 'reinsurer' || ctl.user.role === 'fronter'">
+            <a ui-sref-active="menu-active" 
+            ui-sref="demo.policyList">Policies</a></li>
+            <li>
+            <a ui-sref-active="menu-active" 
+            ui-sref="demo.transactionList">Transactions</a></li>
+          </ul>
+        </div>
+      </div>
+    </div><!-- /column -->
+    <div class="col-md-3">
+      <div class="panel panel-default">
+        <div class="panel-heading"><i class="fa fa-usd"></i> Balance</div>
+        <div class="panel-body">
+          {{ctl.user.balance | currency:"$":0}}
+        </div>
+      </div>
+    </div><!-- /column -->
+    <div class="col-md-3">
+      <div class="panel panel-default">
+        <div class="panel-heading"><i class="fa fa-user"></i> Logged in User</div>
+        <div class="panel-body">
+          <select class="form-control" ng-model="ctl.user" 
+          ng-options="u.id for u in ctl.users"
+          ng-change="ctl.setUser(u)"></select>
+        </div>
+      </div>
+    </div><!-- /column -->
+    <!-- <div class="col-md-3">
+      <div class="panel panel-default">
+        <div class="panel-heading"><i class="fa fa-clock-o"></i> Current Date</div>
+        <div class="panel-body" ng-click="ctl.tick()" ng-dblclick="ctl.clock()">
+          <h5>{{ctl.now() | date:'longDate'}}</h5>
+        </div>
+      </div>
+    </div><!-- /column -->
+  </div><!-- /row -->
+  <ui-view/>
+</div>
