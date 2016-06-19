@@ -3,7 +3,7 @@
  * @classdesc
  * @ngInject
  */
-function PeerService($log, $q, $http, cfg, UserService) {
+function PeerService($log, $q, $http, cfg, IdentityService) {
 
   // jshint shadow: true
   var PeerService = this;
@@ -26,12 +26,12 @@ function PeerService($log, $q, $http, cfg, UserService) {
     payload.method = 'invoke';
     payload.params.ctorMsg['function'] = functionName;
     payload.params.ctorMsg.args = functionArgs;
-    payload.secureContext = UserService.getUser().id;
+    payload.secureContext = IdentityService.getCurrent().id;
 
     $log.debug('payload', payload);
 
-    return $http.post(cfg.endpoint, angular.copy(payload)).then(function(data) {
-      $log.debug('result', data.data.result);
+    return $http.post(cfg.endpoint, angular.copy(payload)).then(function(res) {
+      $log.debug('result', res.data.result);
     });
   };
 
@@ -43,13 +43,13 @@ function PeerService($log, $q, $http, cfg, UserService) {
     payload.method = 'query';
     payload.params.ctorMsg['function'] = functionName;
     payload.params.ctorMsg.args = functionArgs;
-    payload.secureContext = UserService.getUser().id;
+    payload.secureContext = IdentityService.getCurrent().id;
 
     $log.debug('payload', payload);
 
-    $http.post(cfg.endpoint, angular.copy(payload)).then(function(data) {
-      $log.debug('result', data.data.result);
-      d.resolve(data.data.result);
+    $http.post(cfg.endpoint, angular.copy(payload)).then(function(res) {
+      $log.debug('result', res.data.result);
+      d.resolve(res.data.result);
     });
 
     return d.promise;
@@ -59,12 +59,20 @@ function PeerService($log, $q, $http, cfg, UserService) {
     return query('getPolicies', []);
   };
   
-  PeerService.getPolicies = function() {
-    return query('getPolicies', []);
+  PeerService.getTransactions = function() {
+    return query('getTransactions', []);
   };
   
   PeerService.join = function(policyId) {
     return invoke('join', [policyId]);
+  };
+  
+  PeerService.pay = function(policyId) {
+    return invoke('pay', [policyId]);
+  };
+  
+  PeerService.claim = function(policyId, claim) {
+    return invoke('claim', [policyId, claim]);
   };
 
 }

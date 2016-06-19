@@ -103,7 +103,8 @@ ng-click="ctl.ok()" ng-disabled="modalForm.$invalid">Approve</button>
   <div class="form-group">
     <label>amount</label>
     <input class="form-control" required="required" 
-    type="number" min="0" max="{{ctl.maxClaim}}" ng-model="ctl.claim.amt">
+    type="number" min="0" max="{{ctl.maxClaimAmount}}" 
+    ng-model="ctl.claim.amt">
   </div>
 </div>
 <div class="modal-footer">

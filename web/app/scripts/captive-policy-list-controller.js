@@ -4,11 +4,11 @@
  * @ngInject
  */
 function CaptivePolicyListController($scope, $log, $interval, $uibModal, 
-    PeerService) {
+    PeerService, RoleService) {
   
   /*global PolicyListController*/
   PolicyListController.call(this, $scope, $log, $interval, $uibModal, 
-    PeerService);
+    PeerService, RoleService);
 
 //  var ctl = this;
   

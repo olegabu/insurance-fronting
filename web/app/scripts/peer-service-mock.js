@@ -54,33 +54,12 @@ function PeerService($log, $q, $http, $localStorage,
     });
   };
 
-  PeerService.canJoin = function(policy) {
-    var user = IdentityService.getCurrent();
-
-    return (user.role === 'reinsurer' && 
-        policy.supplyChain.captive && !policy.supplyChain.reinsurer) || 
-    (user.role === 'fronter' && 
-        policy.supplyChain.reinsurer && !policy.supplyChain.fronter) || 
-    (user.role === 'affiliate' &&
-        policy.supplyChain.fronter && !policy.supplyChain.affiliate);
-  };
-
   PeerService.join = function(policyId) {
     var user = IdentityService.getCurrent();
 
     var policy = getPolicy(policyId);
 
     policy.supplyChain[user.role] = user.id;
-  };
-
-  PeerService.canApprove = function(policy, claim) {
-    var user = IdentityService.getCurrent();
-
-    return (user.role === 'reinsurer' && 
-        claim.approvalChain.captive && !claim.approvalChain.reinsurer && 
-        policy.supplyChain.reinsurer === user.id) || 
-    (user.role === 'captive' && !claim.approvalChain.captive && 
-        policy.supplyChain.captive === user.id);
   };
 
   PeerService.approve = function(policyId, claimId) {
@@ -96,22 +75,6 @@ function PeerService($log, $q, $http, $localStorage,
       transferDown(policy, claim);
     }
   };
-  
-  PeerService.getMaxClaimAmount = function(policy) {
-    var sum = _.sumBy(getClaims(policy), function(o) {
-      return o.amt;
-    });
-    
-    return policy.coverage - sum;
-  };
-
-  PeerService.canClaim = function(policy) {
-    var user = IdentityService.getCurrent();
-
-    return user.role === 'affiliate' && 
-    policy.supplyChain.affiliate === user.id &&
-    PeerService.getMaxClaimAmount(policy) > 0;
-  };
 
   PeerService.claim = function(policyId, claim) {
     var policy = getPolicy(policyId);
@@ -119,13 +82,6 @@ function PeerService($log, $q, $http, $localStorage,
     claim.approvalChain = {};
     
     addClaim(policy, claim);
-  };
-
-  PeerService.canPay = function(policy) {
-    var user = IdentityService.getCurrent();
-
-    return user.role === 'affiliate' &&
-    policy.supplyChain.affiliate === user.id;
   };
   
   var transfer = function(from, to, amt, purpose) {

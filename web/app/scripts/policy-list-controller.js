@@ -4,7 +4,7 @@
  * @ngInject
  */
 function PolicyListController($scope, $log, $interval, $uibModal, 
-    PeerService) {
+    PeerService, RoleService) {
 
   var ctl = this;
   
@@ -19,7 +19,7 @@ function PolicyListController($scope, $log, $interval, $uibModal,
   $interval(init, 1000);
   
   ctl.canJoin = function(policy) {
-    return PeerService.canJoin(policy);
+    return RoleService.canJoin(policy);
   };
   
   ctl.openJoin = function(policy) {
@@ -39,7 +39,7 @@ function PolicyListController($scope, $log, $interval, $uibModal,
   };
   
   ctl.canApprove = function(policy, claim) {
-    return PeerService.canApprove(policy, claim);
+    return RoleService.canApprove(policy, claim);
   };
   
   ctl.openApprove = function(policy, claim) {

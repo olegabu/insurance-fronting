@@ -4,16 +4,24 @@
  * @ngInject
  */
 function AffiliatePolicyListController($scope, $log, $interval, $uibModal, 
-    PeerService) {
+    PeerService, RoleService) {
   
   /*global PolicyListController*/
   PolicyListController.call(this, $scope, $log, $interval, $uibModal, 
-    PeerService);
+    PeerService, RoleService);
 
   var ctl = this;
   
+  var getMaxClaimAmount = function(policy) {
+    var sum = _.sumBy(policy.claims, function(o) {
+      return o.amt;
+    });
+    
+    return policy.coverage - sum;
+  };
+  
   ctl.canClaim = function(policy) {
-    return PeerService.canClaim(policy);
+    return RoleService.canClaim(policy) && getMaxClaimAmount(policy) > 0;
   };
   
   ctl.openClaim = function(policy) {
@@ -23,6 +31,9 @@ function AffiliatePolicyListController($scope, $log, $interval, $uibModal,
       resolve: {
         policy: function() {
           return policy;
+        },
+        maxClaimAmount: function() {
+          return getMaxClaimAmount(policy);
         }
       }
     });
@@ -33,7 +44,7 @@ function AffiliatePolicyListController($scope, $log, $interval, $uibModal,
   };
   
   ctl.canPay = function(policy) {
-    return PeerService.canPay(policy);
+    return RoleService.canPay(policy);
   };
   
   ctl.openPay = function(policy) {
@@ -53,13 +64,13 @@ function AffiliatePolicyListController($scope, $log, $interval, $uibModal,
   };
 }
 
-function ClaimModalController($uibModalInstance, PeerService, policy) {
+function ClaimModalController($uibModalInstance, PeerService, 
+    policy, maxClaimAmount) {
 
   var ctl = this;
   
   ctl.policy = policy;
-  
-  ctl.maxClaim = PeerService.getMaxClaimAmount(policy);
+  ctl.maxClaimAmount = maxClaimAmount;
   
   ctl.ok = function () {
     $uibModalInstance.close(ctl.claim);
