@@ -9,7 +9,9 @@ function PolicyListController($scope, $log, $interval, $uibModal,
   var ctl = this;
   
   var init = function() {
-    ctl.list = PeerService.getPolicies();    
+    PeerService.getPolicies().then(function(list) {
+      ctl.list = list;
+    });
   };
   
   $scope.$on('$viewContentLoaded', init);

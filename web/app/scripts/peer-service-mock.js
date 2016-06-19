@@ -28,16 +28,28 @@ function PeerService($log, $q, $http, $localStorage,
   var getClaim = function(policy, claimId) {
     return policy.claims[claimId];
   };
+
+  var getClaims = function(policy) {
+    return policy.claims;
+  };
+
+  var getClaimId = function(policy, claim) {
+    return 1 + _.indexOf(policy.claims, claim);
+  };
   
   PeerService.getPolicies = function() {
-    return $storage.policies;
+    return $q(function(resolve) {
+      resolve($storage.policies);
+    });
   };
 
   PeerService.getTransactions = function() {
     var user = IdentityService.getCurrent();
-    
-    return _.filter($storage.transactions, function(o) {
-      return o.from === user.id || o.to === user.id;
+
+    return $q(function(resolve) {
+      resolve(_.filter($storage.transactions, function(o) {
+        return o.from === user.id || o.to === user.id;
+      }));
     });
   };
 
@@ -85,7 +97,7 @@ function PeerService($log, $q, $http, $localStorage,
   };
   
   PeerService.getMaxClaimAmount = function(policy) {
-    var sum = _.sumBy(policy.claims, function(o) {
+    var sum = _.sumBy(getClaims(policy), function(o) {
       return o.amt;
     });
     
@@ -145,7 +157,7 @@ function PeerService($log, $q, $http, $localStorage,
   };
   
   var transferDown = function(policy, claim) {
-    var claimId = 1 + _.indexOf(policy.claims, claim);
+    var claimId = getClaimId(policy, claim);
     var purpose = 'claim.' + policy.id + '.' + claimId;
     
     transfer(policy.supplyChain.captive, policy.supplyChain.reinsurer, 

@@ -3,13 +3,14 @@
  * @classdesc
  * @ngInject
  */
-function DemoController($log, $state, $localStorage,
+function DemoController($log, $state, $localStorage, $window,
     cfg, UserService, IdentityService) {
 
   var ctl = this;
   
   ctl.reset = function() {
     $localStorage.$reset(cfg);
+    $window.location.reload();
   };
   
   ctl.user = IdentityService.getCurrent();

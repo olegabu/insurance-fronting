@@ -9,7 +9,9 @@ function TransactionListController($scope, $log, $interval,
   var ctl = this;
   
   var init = function() {
-    ctl.list = PeerService.getTransactions();
+    PeerService.getTransactions().then(function(list) {
+      ctl.list = list;
+    });
     
     ctl.user = IdentityService.getCurrent();
   };
