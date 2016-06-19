@@ -48,7 +48,8 @@ function PeerService($log, $q, $http, $localStorage,
 
     return $q(function(resolve) {
       resolve(_.filter($storage.transactions, function(o) {
-        return o.from === user.id || o.to === user.id;
+        return user.role === 'auditor' || 
+        o.from === user.id || o.to === user.id;
       }));
     });
   };

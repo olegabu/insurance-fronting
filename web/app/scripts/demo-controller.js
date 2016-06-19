@@ -26,7 +26,7 @@ function DemoController($log, $state, $localStorage, $window,
     else if(ctl.user.role === 'affiliate') {
       $state.go('demo.affiliatePolicyList');
     }
-    else if(ctl.user.role === 'bank') {
+    else if(ctl.user.role === 'bank' || ctl.user.role === 'auditor') {
       $state.go('demo.transactionList');
     }
     else {

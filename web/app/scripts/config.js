@@ -26,6 +26,11 @@ angular.module('config', [])
     id: 'citi', 
     role: 'bank',
     balance: 100000000
+  },
+  {
+    id: 'auditor', 
+    role: 'auditor',
+    balance: 0
   }],
   policies: [{
     id: 1000, 
