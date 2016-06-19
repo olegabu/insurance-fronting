@@ -3,12 +3,15 @@
  * @classdesc
  * @ngInject
  */
-function TransactionListController($scope, $log, $interval, PeerService) {
+function TransactionListController($scope, $log, $interval, 
+    PeerService, IdentityService) {
 
   var ctl = this;
   
   var init = function() {
-    ctl.list = PeerService.getTransactions();    
+    ctl.list = PeerService.getTransactions();
+    
+    ctl.user = IdentityService.getCurrent();
   };
   
   $scope.$on('$viewContentLoaded', init);

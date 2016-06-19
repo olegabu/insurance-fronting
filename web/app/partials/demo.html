@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-6">
       <h1>Insurance Fronting</h1>
     </div><!-- /column -->
     <div class="col-md-3">
@@ -26,27 +26,16 @@
     </div><!-- /column -->
     <div class="col-md-3">
       <div class="panel panel-default">
-        <div class="panel-heading"><i class="fa fa-usd"></i> Balance</div>
-        <div class="panel-body">
-          {{ctl.user.balance | currency:"$":0}}
+        <div class="panel-heading">
+          <i class="fa fa-user"></i> Logged in User
+          <a href title="to beginning" class="pull-right" ng-click="ctl.reset()">
+            <i class="fa fa-refresh"></i> Reset
+          </a>
         </div>
-      </div>
-    </div><!-- /column -->
-    <div class="col-md-3">
-      <div class="panel panel-default">
-        <div class="panel-heading"><i class="fa fa-user"></i> Logged in User</div>
         <div class="panel-body">
           <select class="form-control" ng-model="ctl.user" 
           ng-options="u.id for u in ctl.users"
-          ng-change="ctl.setUser(u)"></select>
-        </div>
-      </div>
-    </div><!-- /column -->
-    <!-- <div class="col-md-3">
-      <div class="panel panel-default">
-        <div class="panel-heading"><i class="fa fa-clock-o"></i> Current Date</div>
-        <div class="panel-body" ng-click="ctl.tick()" ng-dblclick="ctl.clock()">
-          <h5>{{ctl.now() | date:'longDate'}}</h5>
+          ng-change="ctl.setCurrent()"></select>
         </div>
       </div>
     </div><!-- /column -->

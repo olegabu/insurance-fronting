@@ -54,6 +54,18 @@ function PeerService($log, $q, $http, cfg, UserService) {
 
     return d.promise;
   };
+  
+  PeerService.getPolicies = function() {
+    return query('getPolicies', []);
+  };
+  
+  PeerService.getPolicies = function() {
+    return query('getPolicies', []);
+  };
+  
+  PeerService.join = function(policyId) {
+    return invoke('join', [policyId]);
+  };
 
 }
 

@@ -3,25 +3,46 @@
  * @classdesc
  * @ngInject
  */
-function PeerService($log, $q, $http, cfg, UserService) {
+function PeerService($log, $q, $http, $localStorage, 
+    cfg, UserService, IdentityService) {
 
   // jshint shadow: true
   var PeerService = this;
+  
+  var $storage = $localStorage.$default(cfg);
+  
+  var getPolicy = function(policyId) {
+    return _.find($storage.policies, function(o) {
+      return o.id === policyId;
+    });
+  };
+  
+  var addTransaction = function(t) {
+    $storage.transactions.push(t);
+  };
+  
+  var addClaim = function(policy, claim) {
+    policy.claims.push(claim);
+  };
 
+  var getClaim = function(policy, claimId) {
+    return policy.claims[claimId];
+  };
+  
   PeerService.getPolicies = function() {
-    return cfg.policies;
+    return $storage.policies;
   };
 
   PeerService.getTransactions = function() {
-    var user = UserService.getUser();
+    var user = IdentityService.getCurrent();
     
-    return _.filter(cfg.transactions, function(o) {
+    return _.filter($storage.transactions, function(o) {
       return o.from === user.id || o.to === user.id;
     });
   };
 
   PeerService.canJoin = function(policy) {
-    var user = UserService.getUser();
+    var user = IdentityService.getCurrent();
 
     return (user.role === 'reinsurer' && 
         policy.supplyChain.captive && !policy.supplyChain.reinsurer) || 
@@ -32,17 +53,15 @@ function PeerService($log, $q, $http, cfg, UserService) {
   };
 
   PeerService.join = function(policyId) {
-    var user = UserService.getUser();
+    var user = IdentityService.getCurrent();
 
-    var policy = _.find(cfg.policies, function(o) {
-      return o.id === policyId;
-    });
+    var policy = getPolicy(policyId);
 
     policy.supplyChain[user.role] = user.id;
   };
 
   PeerService.canApprove = function(policy, claim) {
-    var user = UserService.getUser();
+    var user = IdentityService.getCurrent();
 
     return (user.role === 'reinsurer' && 
         claim.approvalChain.captive && !claim.approvalChain.reinsurer && 
@@ -52,13 +71,11 @@ function PeerService($log, $q, $http, cfg, UserService) {
   };
 
   PeerService.approve = function(policyId, claimId) {
-    var user = UserService.getUser();
+    var user = IdentityService.getCurrent();
 
-    var policy = _.find(cfg.policies, function(o) {
-      return o.id === policyId;
-    });
-    
-    var claim = policy.claims[claimId];
+    var policy = getPolicy(policyId);
+
+    var claim = getClaim(policy, claimId);
 
     claim.approvalChain[user.role] = user.id;
     
@@ -76,7 +93,7 @@ function PeerService($log, $q, $http, cfg, UserService) {
   };
 
   PeerService.canClaim = function(policy) {
-    var user = UserService.getUser();
+    var user = IdentityService.getCurrent();
 
     return user.role === 'affiliate' && 
     policy.supplyChain.affiliate === user.id &&
@@ -84,37 +101,29 @@ function PeerService($log, $q, $http, cfg, UserService) {
   };
 
   PeerService.claim = function(policyId, claim) {
-    var user = UserService.getUser();
-
-    var policy = _.find(cfg.policies, function(o) {
-      return o.id === policyId;
-    });
+    var policy = getPolicy(policyId);
     
     claim.approvalChain = {};
     
-    policy.claims.push(claim);
+    addClaim(policy, claim);
   };
 
   PeerService.canPay = function(policy) {
-    var user = UserService.getUser();
+    var user = IdentityService.getCurrent();
 
     return user.role === 'affiliate' &&
     policy.supplyChain.affiliate === user.id;
   };
   
   var transfer = function(from, to, amt, purpose) {
-    var fromUser = _.find(cfg.users, function(o) {
-      return o.id === from;
-    });
+    var fromUser = UserService.getUser(from);
     
-    var toUser = _.find(cfg.users, function(o) {
-      return o.id === to;
-    });
+    var toUser = UserService.getUser(to);
     
     fromUser.balance -= amt;
     toUser.balance += amt;
     
-    cfg.transactions.push({
+    addTransaction({
       from: from,
       to: to,
       amt: amt,
@@ -150,11 +159,7 @@ function PeerService($log, $q, $http, cfg, UserService) {
   };
 
   PeerService.pay = function(policyId) {
-    var user = UserService.getUser();
-
-    var policy = _.find(cfg.policies, function(o) {
-      return o.id === policyId;
-    });
+    var policy = getPolicy(policyId);
     
     transferUp(policy);
   };

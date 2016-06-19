@@ -20,7 +20,7 @@ angular.module('config', [])
   {
     id: 'nigeria', 
     role: 'affiliate',
-    balance: 1000
+    balance: 10000
   },
   {
     id: 'citi', 
@@ -54,13 +54,13 @@ angular.module('config', [])
     from: 'citi', 
     to: 'bermuda', 
     amt: 10000000,
-    purpose: 'cash'
+    purpose: 'buy coins'
   },
   {
     from: 'citi', 
     to: 'nigeria', 
     amt: 10000,
-    purpose: 'cash'
+    purpose: 'buy coins'
   },
   /*{
     from: 'nigeria', 

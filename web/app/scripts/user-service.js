@@ -3,23 +3,23 @@
  * @classdesc
  * @ngInject
  */
-function UserService($log, cfg) {
+function UserService($log, $localStorage, cfg) {
 
   // jshint shadow: true
   var UserService = this;
-
-  var user = cfg.users[0];
   
-  UserService.setUser = function(u) {
-    user = u;
-  };
-  
-  UserService.getUser = function() {
-    return user;
-  };
+  var $storage = $localStorage.$default({
+    users: cfg.users
+  });
   
   UserService.getUsers = function() {
-    return cfg.users;
+    return $storage.users;
+  };
+  
+  UserService.getUser = function(userId) {
+    return _.find($storage.users, function(o) {
+      return o.id === userId;
+    });
   };
 
 }

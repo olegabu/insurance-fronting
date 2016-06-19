@@ -2,6 +2,10 @@
  * 
  */
  
+ caption {
+  font-size: large;
+ }
+ 
 .loading {  
   text-align: center;
   font-size: 2em;

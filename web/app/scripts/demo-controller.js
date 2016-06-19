@@ -3,29 +3,21 @@
  * @classdesc
  * @ngInject
  */
-function DemoController($log, $state, 
-    cfg, TimeService, UserService, PeerService) {
+function DemoController($log, $state, $localStorage,
+    cfg, UserService, IdentityService) {
 
   var ctl = this;
-
-  ctl.now = function() {
-    return TimeService.now;
-  };
-
-  ctl.tick = function() {
-    TimeService.tick();
-  };
-
-  ctl.clock = function() {
-    TimeService.clock();
+  
+  ctl.reset = function() {
+    $localStorage.$reset(cfg);
   };
   
-  ctl.user = UserService.getUser();
+  ctl.user = IdentityService.getCurrent();
 
   ctl.users = UserService.getUsers();
   
-  ctl.setUser = function() {
-    UserService.setUser(ctl.user);
+  ctl.setCurrent = function() {
+    IdentityService.setCurrent(ctl.user);
 
     if(ctl.user.role === 'captive') {
       $state.go('demo.captivePolicyList');

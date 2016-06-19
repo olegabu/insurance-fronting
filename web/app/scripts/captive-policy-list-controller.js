@@ -10,7 +10,7 @@ function CaptivePolicyListController($scope, $log, $interval, $uibModal,
   PolicyListController.call(this, $scope, $log, $interval, $uibModal, 
     PeerService);
 
-  var ctl = this;
+//  var ctl = this;
   
 
 }
