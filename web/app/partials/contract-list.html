@@ -1,0 +1,32 @@
+<table class="table">
+  <thead>
+	  <tr>
+	    <th>contract</th>
+      <th>coverage</th>
+      <th>paid</th>
+      <th>premium</th>
+      <th>collected</th>
+      <th>parties</th>
+	  </tr>
+  </thead>
+  <tbody>
+	  <tr ng-repeat="c in ctl.list">
+      <td>{{c.id}}</td>
+      <td><span ng-show="c.totalPolicyCoverage">{{c.totalPolicyCoverage | currency:"$":0}} of </span>{{c.coverage | currency:"$":0}}</td>
+      <td>{{c.totalClaim | currency:"$":0}}</td>
+      <td><span ng-show="c.totalPolicyPremium">{{c.totalPolicyPremium | currency:"$":0}} of </span>{{c.premium | currency:"$":0}}</td>
+      <td>{{c.totalPremium | currency:"$":0}}</td>
+			<td>
+				<dl class="dl-horizontal">
+					<dt>captive</dt>
+					<dd>{{c.supplyChain.captive}}</dd>
+					<dt>reinsurer</dt>
+					<dd>{{c.supplyChain.reinsurer}}</dd>
+				</dl>
+				<a class="btn btn-default btn-block" ng-show="ctl.canJoin(c)" href 
+        ng-click="ctl.openJoin(c)" title="sign contract">
+        join</a>
+			</td>
+	  </tr>
+  </tbody>
+</table>

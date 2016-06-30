@@ -8,33 +8,40 @@ function PeerService($log, $q, $http, $localStorage,
 
   // jshint shadow: true
   var PeerService = this;
+
+  var nextPolicyId = 1001;
+  var nextClaimId = 2001;
   
   var $storage = $localStorage.$default(cfg);
   
-  var getPolicy = function(policyId) {
-    return _.find($storage.policies, function(o) {
-      return o.id === policyId;
-    });
-  };
-  
-  var addTransaction = function(t) {
+  var createTransaction = function(t) {
     $storage.transactions.push(t);
   };
   
-  var addClaim = function(policy, claim) {
-    policy.claims.push(claim);
+  var getClaim = function(claimId) {
+    return _.find($storage.claims, function(o) {
+      return o.id === claimId;
+    });
   };
 
-  var getClaim = function(policy, claimId) {
-    return policy.claims[claimId];
+  var getContract = function(contractId) {
+    return _.find($storage.contracts, function(o) {
+      return o.id === contractId;
+    });
   };
 
-  var getClaims = function(policy) {
-    return policy.claims;
+  PeerService.getClaims = function(policy) {
+    return $q(function(resolve) {
+      resolve(!policy ? $storage.claims : _.find($storage.claims, function(o) {
+        return o.policyId === policy.id;
+      }));
+    });
   };
-
-  var getClaimId = function(policy, claim) {
-    return 1 + _.indexOf(policy.claims, claim);
+  
+  PeerService.getContracts = function() {
+    return $q(function(resolve) {
+      resolve($storage.contracts);
+    });
   };
   
   PeerService.getPolicies = function() {
@@ -53,35 +60,81 @@ function PeerService($log, $q, $http, $localStorage,
       }));
     });
   };
+  
+  PeerService.getPolicy = function(policyId) {
+    return _.find($storage.policies, function(o) {
+      return o.id === policyId;
+    });
+  };
+  
+  PeerService.createPolicy = function(p) {
+    var contract = getContract(p.contractId);
+    
+    p.id = nextPolicyId++;
+    p.supplyChain = angular.copy(contract.supplyChain);
+    
+    $storage.policies.push(p);
+    
+    if(!contract.totalPolicyCoverage) {
+      contract.totalPolicyCoverage = 0;
+    }
+    contract.totalPolicyCoverage += p.coverage;
+    
+    if(!contract.totalPolicyPremium) {
+      contract.totalPolicyPremium = 0;
+    }
+    contract.totalPolicyPremium += p.premium;
+  };
 
   PeerService.join = function(policyId) {
     var user = IdentityService.getCurrent();
 
-    var policy = getPolicy(policyId);
+    var policy = PeerService.getPolicy(policyId);
 
     policy.supplyChain[user.role] = user.id;
   };
 
-  PeerService.approve = function(policyId, claimId) {
+  PeerService.approve = function(claimId) {
     var user = IdentityService.getCurrent();
 
-    var policy = getPolicy(policyId);
-
-    var claim = getClaim(policy, claimId);
+    var claim = getClaim(claimId);
 
     claim.approvalChain[user.role] = user.id;
     
-    if(claim.approvalChain.captive && claim.approvalChain.reinsurer) {
-      transferDown(policy, claim);
+    if(claim.approvalChain.captive && 
+        claim.approvalChain.reinsurer && 
+        claim.approvalChain.fronter) {
+      var policy = PeerService.getPolicy(claim.policyId);
+      var contract = getContract(policy.contractId);
+      var purpose = 'claim.' + claim.policyId + '.' + claim.id;
+      
+      transfer(policy.supplyChain.captive, policy.supplyChain.reinsurer, 
+          claim.amt, purpose);
+      
+      transfer(policy.supplyChain.reinsurer, policy.supplyChain.fronter, 
+          claim.amt, purpose);
+      
+      transfer(policy.supplyChain.fronter, policy.supplyChain.affiliate, 
+          claim.amt, purpose);
+      
+      if(!policy.totalClaim) {
+        policy.totalClaim = 0;
+      }
+      policy.totalClaim += claim.amt;
+      
+      if(!contract.totalClaim) {
+        contract.totalClaim = 0;
+      }
+      contract.totalClaim += claim.amt;
     }
   };
 
-  PeerService.claim = function(policyId, claim) {
-    var policy = getPolicy(policyId);
-    
+  PeerService.createClaim = function(claim) {
     claim.approvalChain = {};
     
-    addClaim(policy, claim);
+    claim.id = nextClaimId++;
+    
+    $storage.claims.push(claim);
   };
   
   var transfer = function(from, to, amt, purpose) {
@@ -92,7 +145,7 @@ function PeerService($log, $q, $http, $localStorage,
     fromUser.balance -= amt;
     toUser.balance += amt;
     
-    addTransaction({
+    createTransaction({
       from: from,
       to: to,
       amt: amt,
@@ -100,7 +153,9 @@ function PeerService($log, $q, $http, $localStorage,
     });
   };
   
-  var transferUp = function(policy) {
+  PeerService.pay = function(policyId) {
+    var policy = PeerService.getPolicy(policyId);
+    var contract = getContract(policy.contractId);
     var purpose = 'premium.' + policy.id;
     
     transfer(policy.supplyChain.affiliate, policy.supplyChain.fronter, 
@@ -111,26 +166,16 @@ function PeerService($log, $q, $http, $localStorage,
     
     transfer(policy.supplyChain.reinsurer, policy.supplyChain.captive, 
         policy.premium, purpose);
-  };
-  
-  var transferDown = function(policy, claim) {
-    var claimId = getClaimId(policy, claim);
-    var purpose = 'claim.' + policy.id + '.' + claimId;
     
-    transfer(policy.supplyChain.captive, policy.supplyChain.reinsurer, 
-        claim.amt, purpose);
+    if(!policy.totalPremium) {
+      policy.totalPremium = 0;
+    }
+    policy.totalPremium += policy.premium;
     
-    transfer(policy.supplyChain.reinsurer, policy.supplyChain.fronter, 
-        claim.amt, purpose);
-    
-    transfer(policy.supplyChain.fronter, policy.supplyChain.affiliate, 
-        claim.amt, purpose);
-  };
-
-  PeerService.pay = function(policyId) {
-    var policy = getPolicy(policyId);
-    
-    transferUp(policy);
+    if(!contract.totalPremium) {
+      contract.totalPremium = 0;
+    }
+    contract.totalPremium += policy.premium;
   };
 
 }

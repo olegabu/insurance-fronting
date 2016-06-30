@@ -4,7 +4,7 @@
  * @ngInject
  */
 function PolicyListController($scope, $log, $interval, $uibModal, 
-    PeerService, RoleService) {
+    PeerService, IdentityService) {
 
   var ctl = this;
   
@@ -12,14 +12,25 @@ function PolicyListController($scope, $log, $interval, $uibModal,
     PeerService.getPolicies().then(function(list) {
       ctl.list = list;
     });
+    
+    ctl.user = IdentityService.getCurrent();
   };
   
   $scope.$on('$viewContentLoaded', init);
   
   $interval(init, 1000);
   
+  ctl.canCreate = function() {    
+    return ctl.user && ctl.user.role === 'captive';
+  }
+  
   ctl.canJoin = function(policy) {
-    return RoleService.canJoin(policy);
+    return (ctl.user.role === 'reinsurer' && 
+        policy.supplyChain.captive && !policy.supplyChain.reinsurer) || 
+    (ctl.user.role === 'fronter' && 
+        policy.supplyChain.reinsurer && !policy.supplyChain.fronter) || 
+    (ctl.user.role === 'affiliate' &&
+        policy.supplyChain.fronter && !policy.supplyChain.affiliate);
   };
   
   ctl.openJoin = function(policy) {
@@ -38,26 +49,6 @@ function PolicyListController($scope, $log, $interval, $uibModal,
     });
   };
   
-  ctl.canApprove = function(policy, claim) {
-    return RoleService.canApprove(policy, claim);
-  };
-  
-  ctl.openApprove = function(policy, claim) {
-    var modalInstance = $uibModal.open({
-      templateUrl: 'approve-modal.html',
-      controller: 'ApproveModalController as ctl',
-      resolve: {
-        claim: function() {
-          return claim;
-        }
-      }
-    });
-
-    modalInstance.result.then(function() {
-      PeerService.approve(policy.id, _.indexOf(policy.claims, claim));
-    });
-  };
-
 }
 
 function JoinModalController($uibModalInstance, policy) {
@@ -75,22 +66,6 @@ function JoinModalController($uibModalInstance, policy) {
   };
 }
 
-function ApproveModalController($uibModalInstance, claim) {
-
-  var ctl = this;
-  
-  ctl.claim = claim;
-  
-  ctl.ok = function () {
-    $uibModalInstance.close();
-  };
-
-  ctl.cancel = function () {
-    $uibModalInstance.dismiss('cancel');
-  };
-}
-
 angular.module('policyListController', [])
 .controller('PolicyListController', PolicyListController)
-.controller('JoinModalController', JoinModalController)
-.controller('ApproveModalController', ApproveModalController);
+.controller('JoinModalController', JoinModalController);

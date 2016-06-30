@@ -1,0 +1,83 @@
+<table class="table">
+  <thead>
+	  <tr>
+	    <th>claim</th>
+      <th>policy</th>
+      <th>amount</th>
+      <th>approvals</th>
+	  </tr>
+  </thead>
+  <tfoot>
+    <tr>
+      <td colspan="4"><button class="btn btn-primary" ng-show="ctl.canClaim()" 
+        ng-click="ctl.openClaim()">New Claim</button>
+      </td>
+    </tr>
+  </tfoot>
+  <tbody>
+	  <tr ng-repeat="c in ctl.list">
+	    <td>{{c.id}}</td>
+      <td>{{c.policyId}}</td>
+			<td>{{c.amt | currency:"$":0}}</td>
+			<td>
+	      <dl class="dl-horizontal">
+         <dt>captive</dt>
+         <dd>{{c.approvalChain.captive}}</dd>
+         <dt>reinsurer</dt>
+         <dd>{{c.approvalChain.reinsurer}}</dd>
+         <dt>fronter</dt>
+         <dd>{{c.approvalChain.fronter}}</dd>
+        </dl>
+        <a class="btn btn-default btn-block" href ng-show="ctl.canApprove(c)" 
+        ng-click="ctl.openApprove(c)" title="approve claim">
+        approve</a>
+      </td>
+	  </tr>
+  </tbody>
+</table>
+
+<script type="text/ng-template" id="approve-modal.html">
+<div class="modal-header">
+<h3 class="modal-title">Approve Claim</h3>
+</div>
+<div class="modal-body">
+  <dl class="dl-horizontal">
+    <dt>policy</dt>
+    <dd>{{ctl.claim.policyId}}</dd>
+    <dt>amount</dt>
+    <dd>{{ctl.claim.amt | currency:"$":0}}</dd>
+  </dl>
+</div>
+<div class="modal-footer">
+<button class="btn btn-primary" type="button" 
+ng-click="ctl.ok()" ng-disabled="modalForm.$invalid">Approve</button>
+<button class="btn btn-warning" type="button" ng-click="ctl.cancel()">Cancel</button>
+</div>
+</script>
+
+<script type="text/ng-template" id="claim-modal.html">
+<form name="modalForm" ng-submit="ctl.ok()">
+<div class="modal-header">
+<h3 class="modal-title">File Claim</h3>
+</div>
+<div class="modal-body">
+  <div class="form-group">
+    <label>policy</label>
+    <select class="form-control" ng-model="ctl.policy"
+     ng-options="p as p.id for p in ctl.policies"></select>
+  </div>
+  <div class="form-group">
+    <label>amount <span ng-show="ctl.policy">max: {{ctl.policy.coverage - ctl.policy.totalClaim | currency:"$":0}}</span></label>
+    <input class="form-control" required="required" 
+    type="number" min="0"
+    ng-max="{{ctl.policy.coverage - ctl.policy.totalClaim}}"
+    ng-model="ctl.claim.amt">
+  </div>
+</div>
+<div class="modal-footer">
+<button class="btn btn-primary" type="submit" 
+ng-disabled="modalForm.$invalid">Claim</button>
+<button class="btn btn-warning" type="button" ng-click="ctl.cancel()">Cancel</button>
+</div>
+</form>
+</script>

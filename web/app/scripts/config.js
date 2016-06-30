@@ -32,29 +32,43 @@ angular.module('config', [])
     role: 'auditor',
     balance: 0
   }],
-  policies: [{
+  contracts: [{
+    id: 10, 
+    coverage: 10000000,
+    premium: 1000,
+    supplyChain: {
+      captive: 'bermuda',
+      reinsurer: 'art',
+    }
+  }],
+  policies: [/*{
     id: 1000, 
+    contractId: 10,
     coverage: 1000000,
     premium: 100,
     supplyChain: {
       captive: 'bermuda',
-      /*reinsurer: 'art',
+      reinsurer: 'art',
       fronter: 'allianz',
-      affiliate: 'nigeria'*/
-    },
-    claims: [/*{
-      amt: 100000,
-      approvalChain: {
-        captive: 'bermuda',
-        reinsurer: 'art'}
-    },
-    {
-      amt: 50000,
-      approvalChain: {
-        captive: 'bermuda',
-        reinsurer: 'art'}
-    }*/]
-  }],
+      affiliate: 'nigeria'
+    }
+  }*/],
+  claims: [/*{
+    id: 2000,
+    policyId: 1000,
+    amt: 100000,
+    approvalChain: {
+      captive: 'bermuda',
+      reinsurer: 'art'}
+  },
+  {
+    id: 2001,
+    policyId: 1000,
+    amt: 50000,
+    approvalChain: {
+      captive: 'bermuda',
+      reinsurer: 'art'}
+  }*/],
   transactions: [{
     from: 'citi', 
     to: 'bermuda', 

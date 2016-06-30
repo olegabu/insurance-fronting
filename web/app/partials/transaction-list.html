@@ -1,5 +1,5 @@
 <table class="table">
-  <caption>
+  <caption ng-show="ctl.user.role !== 'auditor'">
     Balance of <em>{{ctl.user.role}}</em> {{ctl.user.id}}: 
     <strong>{{ctl.user.balance | currency:"$":0}}</strong>
   </caption>
