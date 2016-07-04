@@ -47,7 +47,7 @@
 </table>
 
 <script type="text/ng-template" id="policy-modal.html">
-<form name="modalForm" ng-submit="ctl.ok()">
+<form name="modalForm" ng-submit="ctl.ok()" novalidate>
 <div class="modal-header">
 <h3 class="modal-title">Create Policy</h3>
 </div>
@@ -61,14 +61,12 @@
     <label>coverage <span ng-show="ctl.contract">max: {{ctl.contract.coverage - ctl.contract.totalPolicyCoverage | currency:"$":0}}</span></label>
     <input class="form-control" required
     type="number" min="0" 
-    ng-max="{{ctl.contract.coverage - ctl.contract.totalPolicyCoverage}}"
     ng-model="ctl.policy.coverage">
   </div>
   <div class="form-group">
     <label>premium  <span ng-show="ctl.contract">max: {{ctl.contract.premium - ctl.contract.totalPolicyPremium  | currency:"$":0}}</span></label>
-    <input class="form-control" required 
+    <input class="form-control" required
     type="number" min="0"
-    ng-max="{{ctl.contract.premium - ctl.contract.totalPolicyPremium}}"
     ng-model="ctl.policy.premium">
   </div>
 </div>

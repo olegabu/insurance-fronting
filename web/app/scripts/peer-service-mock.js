@@ -72,17 +72,13 @@ function PeerService($log, $q, $http, $localStorage,
     
     p.id = nextPolicyId++;
     p.supplyChain = angular.copy(contract.supplyChain);
+    p.totalPremium = 0;
+    p.totalClaim = 0;
     
     $storage.policies.push(p);
     
-    if(!contract.totalPolicyCoverage) {
-      contract.totalPolicyCoverage = 0;
-    }
     contract.totalPolicyCoverage += p.coverage;
     
-    if(!contract.totalPolicyPremium) {
-      contract.totalPolicyPremium = 0;
-    }
     contract.totalPolicyPremium += p.premium;
   };
 
@@ -117,14 +113,8 @@ function PeerService($log, $q, $http, $localStorage,
       transfer(policy.supplyChain.fronter, policy.supplyChain.affiliate, 
           claim.amt, purpose);
       
-      if(!policy.totalClaim) {
-        policy.totalClaim = 0;
-      }
       policy.totalClaim += claim.amt;
       
-      if(!contract.totalClaim) {
-        contract.totalClaim = 0;
-      }
       contract.totalClaim += claim.amt;
     }
   };
@@ -167,14 +157,8 @@ function PeerService($log, $q, $http, $localStorage,
     transfer(policy.supplyChain.reinsurer, policy.supplyChain.captive, 
         policy.premium, purpose);
     
-    if(!policy.totalPremium) {
-      policy.totalPremium = 0;
-    }
     policy.totalPremium += policy.premium;
     
-    if(!contract.totalPremium) {
-      contract.totalPremium = 0;
-    }
     contract.totalPremium += policy.premium;
   };
 

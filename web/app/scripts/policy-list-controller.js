@@ -22,7 +22,7 @@ function PolicyListController($scope, $log, $interval, $uibModal,
   
   ctl.canCreate = function() {    
     return ctl.user && ctl.user.role === 'captive';
-  }
+  };
   
   ctl.canJoin = function(policy) {
     return (ctl.user.role === 'reinsurer' && 

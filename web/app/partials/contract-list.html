@@ -12,9 +12,9 @@
   <tbody>
 	  <tr ng-repeat="c in ctl.list">
       <td>{{c.id}}</td>
-      <td><span ng-show="c.totalPolicyCoverage">{{c.totalPolicyCoverage | currency:"$":0}} of </span>{{c.coverage | currency:"$":0}}</td>
+      <td><span ng-show="c.totalPolicyCoverage">{{c.totalPolicyCoverage | currency:"$":0}}<br>of<br></span>{{c.coverage | currency:"$":0}}</td>
       <td>{{c.totalClaim | currency:"$":0}}</td>
-      <td><span ng-show="c.totalPolicyPremium">{{c.totalPolicyPremium | currency:"$":0}} of </span>{{c.premium | currency:"$":0}}</td>
+      <td><span ng-show="c.totalPolicyPremium">{{c.totalPolicyPremium | currency:"$":0}}<br>of<br></span>{{c.premium | currency:"$":0}}</td>
       <td>{{c.totalPremium | currency:"$":0}}</td>
 			<td>
 				<dl class="dl-horizontal">

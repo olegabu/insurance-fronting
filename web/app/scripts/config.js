@@ -36,6 +36,10 @@ angular.module('config', [])
     id: 10, 
     coverage: 10000000,
     premium: 1000,
+    totalPolicyCoverage: 0,
+    totalPolicyPremium: 0,
+    totalClaim: 0,
+    totalPremium: 0,
     supplyChain: {
       captive: 'bermuda',
       reinsurer: 'art',
