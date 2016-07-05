@@ -1,0 +1,17 @@
+{
+  "jsonrpc": "2.0",
+  "method": "invoke",
+  "params": {
+    "type": 1,
+    "chaincodeID": {
+      "name": "2e95fdc9ed558582a58aa8724a78a243735949eb7aee693c935cb1fa64cc078f96cadf7bdd64d1657d21b280c7e23d0a88cb49cd7ba28e48afcb0da74a86a085"
+    },
+    "ctorMsg": {
+      "function": "demoInit",
+      "args": []
+    },
+    "secureContext": "citi",
+    "attributes": ["role", "company"]
+  },
+  "id": 0
+}

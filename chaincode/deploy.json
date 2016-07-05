@@ -1,0 +1,19 @@
+{
+  "jsonrpc": "2.0",
+  "method": "deploy",
+  "params": {
+    "type": 1,
+    "chaincodeID": {
+      "path": "github.com/VladimirStarostenkov/insurance-fronting/chaincode"
+    },
+    "ctorMsg": {
+      "function": "string",
+      "args": [
+        "string"
+      ]
+    },
+    "secureContext": "citi",
+    "attributes": ["role", "company"]
+  },
+  "id": 0
+}
