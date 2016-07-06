@@ -16,23 +16,23 @@ type InsuranceFrontingChaincode struct {
 }
 
 type contract struct {
-	ID                   string
-	MaxCoverage          uint64
-	MaxPremium           uint64
-	Captive              string
-	Reinsurer            string
-	CurrentTotalCoverage uint64
-	CurrentTotalPremium  uint64
-	CurrentPaidClaim     uint64
-	CurrentPaidPremium   uint64
+	ID                   string `json:"id"`
+	MaxCoverage          uint64 `json:"maxCoverage"`
+	MaxPremium           uint64 `json:"maxPremium"`
+	Captive              string `json:"captive"`
+	Reinsurer            string `json:"reinsurer"`
+	CurrentTotalCoverage uint64 `json:"currentTotalCoverage"`
+	CurrentTotalPremium  uint64 `json:"currentTotalPremium"`
+	CurrentPaidClaim     uint64 `json:"currentPaidClaim"`
+	CurrentPaidPremium   uint64 `json:"currentPaidPremium"`
 }
 
 // frontingChain defines mapping between roles and orgs in insurance
 type frontingChain struct {
-	Captive   string
-	Reinsurer string
-	Fronter   string
-	Affiliate string
+	Captive   string `json:"captive"`
+	Reinsurer string `json:"reinsurer"`
+	Fronter   string `json:"fronter"`
+	Affiliate string `json:"affiliate"`
 }
 
 // claim ..
