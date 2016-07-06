@@ -361,6 +361,22 @@ func (t *InsuranceFrontingChaincode) demoInit(stub *shim.ChaincodeStub) ([]byte,
 		return nil, err
 	}
 
+	if _, err := t.createPolicy(stub, "1", 12500, 3); err != nil {
+		return nil, err
+	}
+
+	policy_, err := t.getPolicy(stub, "1.1")
+	if err != nil {
+		return nil, err
+	}
+
+	policy_.FrontingChain.Fronter = "Allianz"
+	policy_.FrontingChain.Affiliate = "Nigeria"
+
+	if _, err := t.updatePolicy(stub, policy_); err != nil {
+		return nil, err
+	}
+
 	return nil, nil
 }
 
@@ -1208,5 +1224,6 @@ func (t *InsuranceFrontingChaincode) getPolicy(stub *shim.ChaincodeStub, policyI
 
 	return result, nil
 }
+
 
 
