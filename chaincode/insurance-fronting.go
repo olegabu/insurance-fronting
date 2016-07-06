@@ -7,6 +7,7 @@ import (
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/op/go-logging"
+	"strings"
 )
 
 var log = logging.MustGetLogger("insurance-fronting")
@@ -1100,7 +1101,7 @@ func (t *InsuranceFrontingChaincode) createPolicy(stub *shim.ChaincodeStub, cont
 
 	policy_ := policy{
 		ContractID:    contract_.ID,
-		PolicyID:      strconv.FormatUint(policyID, 10),
+		PolicyID:      contract_.ID + "." + strconv.FormatUint(policyID, 10),
 		Coverage:      coverage,
 		Premium:       premium,
 		FrontingChain: frontingChain{Captive: contract_.Captive, Reinsurer: contract_.Reinsurer}}
@@ -1167,9 +1168,12 @@ func (t *InsuranceFrontingChaincode) updatePolicy(stub *shim.ChaincodeStub, poli
 func (t *InsuranceFrontingChaincode) getPolicy(stub *shim.ChaincodeStub, policyID string) (policy, error) {
 	log.Debugf("Getting policy for policyID %v", policyID)
 
+	columnNames := strings.Split(policyID, ".")
 	var columns []shim.Column
-	col1 := shim.Column{Value: &shim.Column_String_{String_: policyID}}
-	columns = append(columns, col1)
+	contractID_ := shim.Column{Value: &shim.Column_String_{String_: columnNames[0]}}
+	columns = append(columns, contractID_)
+	policyID_ := shim.Column{Value: &shim.Column_String_{String_: policyID}}
+	columns = append(columns, policyID_)
 
 	row, err := stub.GetRow("Policies", columns)
 	if err != nil {
@@ -1204,4 +1208,5 @@ func (t *InsuranceFrontingChaincode) getPolicy(stub *shim.ChaincodeStub, policyI
 
 	return result, nil
 }
+
 
