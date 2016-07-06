@@ -337,7 +337,7 @@ func (t *InsuranceFrontingChaincode) demoInit(stub *shim.ChaincodeStub) ([]byte,
 	/*	Create example policies 	*/
 	log.Debug("Create example contract.")
 
-	exampleContract := contract{MaxCoverage: 10000000, MaxPremium: 1000, Captive: "Bermuda", Reinsurer: "Art"}
+	exampleContract := contract{MaxCoverage: 10000000, MaxPremium: 10000, Captive: "Bermuda", Reinsurer: "Art"}
 	if _, err := t.createContract(stub, exampleContract); err != nil {
 		return nil, err
 	}
@@ -349,7 +349,7 @@ func (t *InsuranceFrontingChaincode) demoInit(stub *shim.ChaincodeStub) ([]byte,
 		return nil, err
 	}
 
-	if _, err := t.emitCoins(stub, "Bermuda", 6000000); err != nil {
+	if _, err := t.emitCoins(stub, "Bermuda", 10000000); err != nil {
 		return nil, err
 	}
 
@@ -361,7 +361,7 @@ func (t *InsuranceFrontingChaincode) demoInit(stub *shim.ChaincodeStub) ([]byte,
 		return nil, err
 	}
 
-	if _, err := t.createPolicy(stub, "1", 12500, 3); err != nil {
+	/*if _, err := t.createPolicy(stub, "1", 12500, 3); err != nil {
 		return nil, err
 	}
 
@@ -375,7 +375,7 @@ func (t *InsuranceFrontingChaincode) demoInit(stub *shim.ChaincodeStub) ([]byte,
 
 	if _, err := t.updatePolicy(stub, policy_); err != nil {
 		return nil, err
-	}
+	}*/
 
 	return nil, nil
 }
