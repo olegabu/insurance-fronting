@@ -24,13 +24,13 @@ function ClaimListController($scope, $log, $interval, $uibModal,
 
     return (claim.approvalChain.captive && 
               !claim.approvalChain.reinsurer && 
-              policy.supplyChain.reinsurer === user.id) || 
+              policy.frontingChain.reinsurer === user.id) || 
         (!claim.approvalChain.captive && 
-            policy.supplyChain.captive === user.id) || 
+            policy.frontingChain.captive === user.id) || 
         (claim.approvalChain.captive && 
             claim.approvalChain.reinsurer && 
             !claim.approvalChain.fronter && 
-            policy.supplyChain.fronter === user.id);
+            policy.frontingChain.fronter === user.id);
   };
   
   ctl.openApprove = function(claim) {

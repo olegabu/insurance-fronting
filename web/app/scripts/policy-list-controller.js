@@ -26,11 +26,11 @@ function PolicyListController($scope, $log, $interval, $uibModal,
   
   ctl.canJoin = function(policy) {
     return (ctl.user.role === 'reinsurer' && 
-        policy.supplyChain.captive && !policy.supplyChain.reinsurer) || 
+        policy.frontingChain.captive && !policy.frontingChain.reinsurer) || 
     (ctl.user.role === 'fronter' && 
-        policy.supplyChain.reinsurer && !policy.supplyChain.fronter) || 
+        policy.frontingChain.reinsurer && !policy.frontingChain.fronter) || 
     (ctl.user.role === 'affiliate' &&
-        policy.supplyChain.fronter && !policy.supplyChain.affiliate);
+        policy.frontingChain.fronter && !policy.frontingChain.affiliate);
   };
   
   ctl.openJoin = function(policy) {

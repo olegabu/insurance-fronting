@@ -21,22 +21,22 @@
       <td>{{p.id}}</td>
       <td>{{p.contractId}}</td>
       <td>{{p.coverage | currency:"$":0}}</td>
-      <td>{{p.totalClaim | currency:"$":0}}</td>
+      <td>{{p.paidClaim | currency:"$":0}}</td>
 			<td>{{p.premium | currency:"$":0}}
         <a class="btn btn-default btn-block" ng-if="ctl.canPay(p)" href
 				ng-click="ctl.openPay(p)" title="pay premium">pay</a>
 			</td>
-      <td>{{p.totalPremium | currency:"$":0}}</td>
+      <td>{{p.paidPremium | currency:"$":0}}</td>
 			<td>
 	      <dl class="dl-horizontal">
          <dt>captive</dt>
-         <dd>{{p.supplyChain.captive}}</dd>
+         <dd>{{p.frontingChain.captive}}</dd>
          <dt>reinsurer</dt>
-         <dd>{{p.supplyChain.reinsurer}}</dd>
+         <dd>{{p.frontingChain.reinsurer}}</dd>
          <dt>fronter</dt>
-         <dd>{{p.supplyChain.fronter}}</dd>
+         <dd>{{p.frontingChain.fronter}}</dd>
          <dt>affiliate</dt>
-         <dd>{{p.supplyChain.affiliate}}</dd>
+         <dd>{{p.frontingChain.affiliate}}</dd>
 	      </dl>
         <a class="btn btn-default btn-block" ng-show="ctl.canJoin(p)" href 
         ng-click="ctl.openJoin(p)" title="join fronting chain">
@@ -58,13 +58,13 @@
      ng-options="c as c.id for c in ctl.contracts"></select>
   </div>
   <div class="form-group">
-    <label>coverage <span ng-show="ctl.contract">max: {{ctl.contract.coverage - ctl.contract.totalPolicyCoverage | currency:"$":0}}</span></label>
+    <label>coverage <span ng-show="ctl.contract">max: {{ctl.contract.maxCoverage - ctl.contract.currentTotalCoverage | currency:"$":0}}</span></label>
     <input class="form-control" required
     type="number" min="0" 
     ng-model="ctl.policy.coverage">
   </div>
   <div class="form-group">
-    <label>premium  <span ng-show="ctl.contract">max: {{ctl.contract.premium - ctl.contract.totalPolicyPremium  | currency:"$":0}}</span></label>
+    <label>premium  <span ng-show="ctl.contract">max: {{ctl.contract.maxPremium - ctl.contract.currentTotalPremium  | currency:"$":0}}</span></label>
     <input class="form-control" required
     type="number" min="0"
     ng-model="ctl.policy.premium">

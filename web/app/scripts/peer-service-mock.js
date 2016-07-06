@@ -71,15 +71,18 @@ function PeerService($log, $q, $http, $localStorage,
     var contract = getContract(p.contractId);
     
     p.id = nextPolicyId++;
-    p.supplyChain = angular.copy(contract.supplyChain);
-    p.totalPremium = 0;
-    p.totalClaim = 0;
+    p.frontingChain = {
+        captive: contract.captive,
+        reinsurer: contract.reinsurer,
+    };
+    p.paidPremium = 0;
+    p.paidClaim = 0;
     
     $storage.policies.push(p);
     
-    contract.totalPolicyCoverage += p.coverage;
+    contract.currentTotalCoverage += p.coverage;
     
-    contract.totalPolicyPremium += p.premium;
+    contract.currentTotalPremium += p.premium;
   };
 
   PeerService.join = function(policyId) {
@@ -87,7 +90,7 @@ function PeerService($log, $q, $http, $localStorage,
 
     var policy = PeerService.getPolicy(policyId);
 
-    policy.supplyChain[user.role] = user.id;
+    policy.frontingChain[user.role] = user.id;
   };
 
   PeerService.approve = function(claimId) {
@@ -104,18 +107,18 @@ function PeerService($log, $q, $http, $localStorage,
       var contract = getContract(policy.contractId);
       var purpose = 'claim.' + claim.policyId + '.' + claim.id;
       
-      transfer(policy.supplyChain.captive, policy.supplyChain.reinsurer, 
+      transfer(policy.frontingChain.captive, policy.frontingChain.reinsurer, 
           claim.amt, purpose);
       
-      transfer(policy.supplyChain.reinsurer, policy.supplyChain.fronter, 
+      transfer(policy.frontingChain.reinsurer, policy.frontingChain.fronter, 
           claim.amt, purpose);
       
-      transfer(policy.supplyChain.fronter, policy.supplyChain.affiliate, 
+      transfer(policy.frontingChain.fronter, policy.frontingChain.affiliate, 
           claim.amt, purpose);
       
-      policy.totalClaim += claim.amt;
+      policy.paidClaim += claim.amt;
       
-      contract.totalClaim += claim.amt;
+      contract.currentPaidClaim += claim.amt;
     }
   };
 
@@ -148,18 +151,18 @@ function PeerService($log, $q, $http, $localStorage,
     var contract = getContract(policy.contractId);
     var purpose = 'premium.' + policy.id;
     
-    transfer(policy.supplyChain.affiliate, policy.supplyChain.fronter, 
+    transfer(policy.frontingChain.affiliate, policy.frontingChain.fronter, 
         policy.premium, purpose);
     
-    transfer(policy.supplyChain.fronter, policy.supplyChain.reinsurer, 
+    transfer(policy.frontingChain.fronter, policy.frontingChain.reinsurer, 
         policy.premium, purpose);
     
-    transfer(policy.supplyChain.reinsurer, policy.supplyChain.captive, 
+    transfer(policy.frontingChain.reinsurer, policy.frontingChain.captive, 
         policy.premium, purpose);
     
-    policy.totalPremium += policy.premium;
+    policy.paidPremium += policy.premium;
     
-    contract.totalPremium += policy.premium;
+    contract.currentPaidPremium += policy.premium;
   };
 
 }

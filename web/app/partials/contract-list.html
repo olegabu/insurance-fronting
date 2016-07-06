@@ -12,16 +12,20 @@
   <tbody>
 	  <tr ng-repeat="c in ctl.list">
       <td>{{c.id}}</td>
-      <td><span ng-show="c.totalPolicyCoverage">{{c.totalPolicyCoverage | currency:"$":0}}<br>of<br></span>{{c.coverage | currency:"$":0}}</td>
-      <td>{{c.totalClaim | currency:"$":0}}</td>
-      <td><span ng-show="c.totalPolicyPremium">{{c.totalPolicyPremium | currency:"$":0}}<br>of<br></span>{{c.premium | currency:"$":0}}</td>
-      <td>{{c.totalPremium | currency:"$":0}}</td>
+      <td><span ng-show="c.currentTotalCoverage">{{c.currentTotalCoverage | currency:"$":0}}
+      <br>of<br>
+      </span>{{c.maxCoverage | currency:"$":0}}</td>
+      <td>{{c.currentPaidClaim | currency:"$":0}}</td>
+      <td><span ng-show="c.currentTotalPremium">{{c.currentTotalPremium | currency:"$":0}}
+      <br>of<br>
+      </span>{{c.maxPremium | currency:"$":0}}</td>
+      <td>{{c.currentPaidPremium | currency:"$":0}}</td>
 			<td>
 				<dl class="dl-horizontal">
 					<dt>captive</dt>
-					<dd>{{c.supplyChain.captive}}</dd>
+					<dd>{{c.captive}}</dd>
 					<dt>reinsurer</dt>
-					<dd>{{c.supplyChain.reinsurer}}</dd>
+					<dd>{{c.reinsurer}}</dd>
 				</dl>
 				<a class="btn btn-default btn-block" ng-show="ctl.canJoin(c)" href 
         ng-click="ctl.openJoin(c)" title="sign contract">

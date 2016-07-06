@@ -34,23 +34,21 @@ angular.module('config', [])
   }],
   contracts: [{
     id: 10, 
-    coverage: 10000000,
-    premium: 1000,
-    totalPolicyCoverage: 0,
-    totalPolicyPremium: 0,
-    totalClaim: 0,
-    totalPremium: 0,
-    supplyChain: {
-      captive: 'bermuda',
-      reinsurer: 'art',
-    }
+    maxCoverage: 10000000,
+    maxPremium: 1000,
+    currentTotalCoverage: 0,
+    currentTotalPremium: 0,
+    currentPaidClaim: 0,
+    currentPaidPremium: 0,
+    captive: 'bermuda',
+    reinsurer: 'art'
   }],
   policies: [/*{
     id: 1000, 
     contractId: 10,
     coverage: 1000000,
     premium: 100,
-    supplyChain: {
+    frontingChain: {
       captive: 'bermuda',
       reinsurer: 'art',
       fronter: 'allianz',
