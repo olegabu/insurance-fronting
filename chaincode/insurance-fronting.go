@@ -38,30 +38,30 @@ type frontingChain struct {
 
 // claim ..
 type claim struct {
-	PolicyID            string
-	ClaimID             string
-	Amt                 uint64
-	ApprovedByCaptive   bool
-	ApprovedByReinsurer bool
-	ApprovedByFronter   bool
+	PolicyID            string `json:"policyId"`
+	ClaimID             string `json:"id"`
+	Amt                 uint64 `json:"amt"`
+	ApprovedByCaptive   bool `json:"approvedByCaptive"`
+	ApprovedByReinsurer bool `json:"approvedByReinsurer"`
+	ApprovedByFronter   bool `json:"approvedByFronter"`
 }
 
 type policy struct {
-	ContractID    string
-	PolicyID      string
-	Coverage      uint64
-	Premium       uint64
-	PaidClaim     uint64
-	PaidPremium   uint64
-	FrontingChain frontingChain
+	ContractID    string `json:"contractId"`
+	PolicyID      string `json:"id"`
+	Coverage      uint64 `json:"coverage"`
+	Premium       uint64 `json:"premium"`
+	PaidClaim     uint64 `json:"paidClaim"`
+	PaidPremium   uint64 `json:"paidPremium"`
+	FrontingChain frontingChain `json:"frontingChain"`
 }
 
 type transaction struct {
-	ID      string
-	From    string
-	To      string
-	Amt     uint64
-	Purpose string
+	ID      string `json:"id"`
+	From    string `json:"from"`
+	To      string `json:"to"`
+	Amt     uint64 `json:"amt"`
+	Purpose string `json:"purpose"`
 }
 
 // Init creates Policy and Transaction tables in Ledger
