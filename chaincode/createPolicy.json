@@ -1,14 +1,14 @@
 {
   "jsonrpc": "2.0",
-  "method": "query",
+  "method": "invoke",
   "params": {
     "type": 1,
     "chaincodeID":{
       "name":"{{chaincodeName}}"
     },
     "ctorMsg": {
-      "function":"getContracts",
-      "args":[]
+      "function":"createPolicy",
+      "args":["1", "1000000", "100"]
     },
     "secureContext": "bermuda",
     "attributes": ["role", "company"]

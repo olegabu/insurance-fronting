@@ -1,0 +1,8 @@
+{"jsonrpc":"2.0",
+  "method":"invoke",
+  "params":{"type":1,"chaincodeID":{"name":"{{chaincodeName}}"},
+    "ctorMsg":{"function":"pay","args":["1.1"]},
+    "secureContext":"nigeria",
+    "attributes":["role","company"]},
+    "id":1
+}

@@ -4,13 +4,13 @@
   "params": {
     "type": 1,
     "chaincodeID": {
-      "path": "github.com/VladimirStarostenkov/insurance-fronting/chaincode"
+      "path": "github.com/olegabu/insurance-fronting/chaincode"
     },
     "ctorMsg": {
       "function": "string",
       "args": [
-        "string"
-      ]
+               "string"
+               ]
     },
     "secureContext": "citi",
     "attributes": ["role", "company"]
