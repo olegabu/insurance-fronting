@@ -41,9 +41,9 @@ type claim struct {
 	PolicyID            string `json:"policyId"`
 	ClaimID             string `json:"id"`
 	Amt                 uint64 `json:"amt"`
-	ApprovedByCaptive   bool `json:"approvedByCaptive"`
-	ApprovedByReinsurer bool `json:"approvedByReinsurer"`
-	ApprovedByFronter   bool `json:"approvedByFronter"`
+	Captive             string `json:"captive"`
+	Reinsurer           string `json:"reinsurer"`
+	Fronter             string `json:"fronter"`
 }
 
 type policy struct {
@@ -105,9 +105,9 @@ func (t *InsuranceFrontingChaincode) Init(stub *shim.ChaincodeStub, function str
 		&shim.ColumnDefinition{Name: "PolicyID", Type: shim.ColumnDefinition_STRING, Key: true},
 		&shim.ColumnDefinition{Name: "ClaimID", Type: shim.ColumnDefinition_STRING, Key: true},
 		&shim.ColumnDefinition{Name: "Amt", Type: shim.ColumnDefinition_UINT64, Key: false},
-		&shim.ColumnDefinition{Name: "ApprovedByCaptive", Type: shim.ColumnDefinition_BOOL, Key: false},
-		&shim.ColumnDefinition{Name: "ApprovedByReinsurer", Type: shim.ColumnDefinition_BOOL, Key: false},
-		&shim.ColumnDefinition{Name: "ApprovedByFronter", Type: shim.ColumnDefinition_BOOL, Key: false},
+		&shim.ColumnDefinition{Name: "Captive", Type: shim.ColumnDefinition_STRING, Key: false},
+		&shim.ColumnDefinition{Name: "Reinsurer", Type: shim.ColumnDefinition_STRING, Key: false},
+		&shim.ColumnDefinition{Name: "Fronter", Type: shim.ColumnDefinition_STRING, Key: false},
 	})
 	if err != nil {
 		log.Criticalf("function: %s, args: %s", function, args)
@@ -358,6 +358,22 @@ func (t *InsuranceFrontingChaincode) demoInit(stub *shim.ChaincodeStub) ([]byte,
 	}
 
 	if _, err := t.emitCoins(stub, "Nigeria", 10000); err != nil {
+		return nil, err
+	}
+
+	if _, err := t.createPolicy(stub, "1", 12500, 3); err != nil {
+		return nil, err
+	}
+
+	policy_, err := t.getPolicy(stub, "1.1")
+	if err != nil {
+		return nil, err
+	}
+
+	policy_.FrontingChain.Fronter = "Allianz"
+	policy_.FrontingChain.Affiliate = "Nigeria"
+
+	if _, err := t.updatePolicy(stub, policy_); err != nil {
 		return nil, err
 	}
 
@@ -774,7 +790,7 @@ func (t *InsuranceFrontingChaincode) createClaim(stub *shim.ChaincodeStub, polic
 		log.Error(message)
 		return nil, errors.New(message)
 	}
-	if contract_.CurrentPaidClaim += amount; contract_.CurrentPaidClaim > contract_.MaxCoverage {
+	if (contract_.CurrentPaidClaim + amount) > contract_.MaxCoverage {
 		message := "Claim is too high for contract " + contract_.ID
 		log.Error(message)
 		return nil, errors.New(message)
@@ -792,19 +808,15 @@ func (t *InsuranceFrontingChaincode) createClaim(stub *shim.ChaincodeStub, polic
 			&shim.Column{Value: &shim.Column_String_{String_: claim_.PolicyID}},
 			&shim.Column{Value: &shim.Column_String_{String_: claim_.ClaimID}},
 			&shim.Column{Value: &shim.Column_Uint64{Uint64: claim_.Amt}},
-			&shim.Column{Value: &shim.Column_Bool{Bool: claim_.ApprovedByCaptive}},
-			&shim.Column{Value: &shim.Column_Bool{Bool: claim_.ApprovedByReinsurer}},
-			&shim.Column{Value: &shim.Column_Bool{Bool: claim_.ApprovedByFronter}}},
+			&shim.Column{Value: &shim.Column_String_{String_: claim_.Captive}},
+			&shim.Column{Value: &shim.Column_String_{String_: claim_.Reinsurer}},
+			&shim.Column{Value: &shim.Column_String_{String_: claim_.Fronter}}},
 	}); !ok {
 		return nil, err
 	}
 
 	if _, err := t.updatePolicy(stub, policy_); err != nil {
 		log.Errorf("Failed updating policy : %s", err.Error())
-		return nil, err
-	}
-	if _, err := t.updateContract(stub, contract_); err != nil {
-		log.Errorf("Failed updating contract : %s", err.Error())
 		return nil, err
 	}
 
@@ -817,9 +829,9 @@ func (t *InsuranceFrontingChaincode) updateClaim(stub *shim.ChaincodeStub, claim
 			&shim.Column{Value: &shim.Column_String_{String_: claim_.PolicyID}},
 			&shim.Column{Value: &shim.Column_String_{String_: claim_.ClaimID}},
 			&shim.Column{Value: &shim.Column_Uint64{Uint64: claim_.Amt}},
-			&shim.Column{Value: &shim.Column_Bool{Bool: claim_.ApprovedByCaptive}},
-			&shim.Column{Value: &shim.Column_Bool{Bool: claim_.ApprovedByReinsurer}},
-			&shim.Column{Value: &shim.Column_Bool{Bool: claim_.ApprovedByFronter}}},
+			&shim.Column{Value: &shim.Column_String_{String_: claim_.Captive}},
+			&shim.Column{Value: &shim.Column_String_{String_: claim_.Reinsurer}},
+			&shim.Column{Value: &shim.Column_String_{String_: claim_.Fronter}}},
 	})
 }
 
@@ -832,21 +844,20 @@ func (t *InsuranceFrontingChaincode) getClaim(stub *shim.ChaincodeStub, policyID
 	columnClaimID := shim.Column{Value: &shim.Column_String_{String_: claimID}}
 	columns = append(columns, columnClaimID)
 
-	rows, err := stub.GetRows("Claims", columns)
-	if err != nil || len(rows) < 1 {
-		message := "Failed retrieving claim ID " + string(claimID) + ". Error: " + err.Error()
+	row, err := stub.GetRow("Claims", columns)
+	if err != nil {
+		message := "Failed retrieving claim ID " + claimID + ". Error: " + err.Error()
 		log.Error(message)
 		return claim{}, errors.New(message)
 	}
 
-	row := <-rows
 	result := claim{
-		PolicyID:            row.Columns[0].GetString_(),
-		ClaimID:             row.Columns[1].GetString_(),
-		Amt:                 row.Columns[2].GetUint64(),
-		ApprovedByCaptive:   row.Columns[3].GetBool(),
-		ApprovedByReinsurer: row.Columns[4].GetBool(),
-		ApprovedByFronter:   row.Columns[5].GetBool()}
+		PolicyID:  row.Columns[0].GetString_(),
+		ClaimID:   row.Columns[1].GetString_(),
+		Amt:       row.Columns[2].GetUint64(),
+		Captive:   row.Columns[3].GetString_(),
+		Reinsurer: row.Columns[4].GetString_(),
+		Fronter:   row.Columns[5].GetString_()}
 
 	return result, nil
 }
@@ -882,25 +893,25 @@ func (t *InsuranceFrontingChaincode) approveClaim(stub *shim.ChaincodeStub, poli
 	/*   That is how the claim should be approved:  */
 	/*	Captive -> Reinsurer -> Fronter 	*/
 	c := &policy_.FrontingChain
-	if !claim_.ApprovedByCaptive {
+	if claim_.Captive == "" {
 		if c.Captive == caller {
-			claim_.ApprovedByCaptive = true
+			claim_.Captive = caller
 		} else {
 			message := "Claim approve failure. Expected captive: " + c.Captive + ", got: " + caller
 			log.Error(message)
 			return nil, errors.New(message)
 		}
-	} else if !claim_.ApprovedByReinsurer {
+	} else if claim_.Reinsurer == "" {
 		if c.Reinsurer == caller {
-			claim_.ApprovedByReinsurer = true
+			claim_.Reinsurer = caller
 		} else {
 			message := "Claim approve failure. Expected reinsurer: " + c.Reinsurer + ", got: " + caller
 			log.Error(message)
 			return nil, errors.New(message)
 		}
-	} else if !claim_.ApprovedByFronter {
+	} else if claim_.Fronter == "" {
 		if c.Fronter == caller {
-			claim_.ApprovedByFronter = true
+			claim_.Fronter = caller
 		} else {
 			message := "Claim approve failure. Expected fronter: " + c.Fronter + ", got: " + caller
 			log.Error(message)
@@ -918,7 +929,7 @@ func (t *InsuranceFrontingChaincode) approveClaim(stub *shim.ChaincodeStub, poli
 		return nil, err
 	}
 
-	if claim_.ApprovedByFronter && claim_.ApprovedByReinsurer && claim_.ApprovedByCaptive {
+	if (claim_.Fronter == c.Fronter) && (claim_.Reinsurer == c.Reinsurer) && (claim_.Captive == c.Captive) {
 		amount := claim_.Amt
 		/*  That is how the money are going to be transferred:  */
 		/*	Captive -> Reinsurer -> Fronter -> Affiliate 	*/
@@ -927,7 +938,7 @@ func (t *InsuranceFrontingChaincode) approveClaim(stub *shim.ChaincodeStub, poli
 			From:    c.Captive,
 			To:      c.Reinsurer,
 			Amt:     amount,
-			Purpose: claim_.PolicyID + claim_.ClaimID}
+			Purpose: "claim." + claim_.PolicyID + "." + claim_.ClaimID}
 		if _, err := t.transact(stub, cap_rei); err != nil {
 			return nil, err
 		}
@@ -936,7 +947,7 @@ func (t *InsuranceFrontingChaincode) approveClaim(stub *shim.ChaincodeStub, poli
 			From:    c.Reinsurer,
 			To:      c.Fronter,
 			Amt:     amount,
-			Purpose: claim_.PolicyID + claim_.ClaimID}
+			Purpose: "claim." + claim_.PolicyID + "." + claim_.ClaimID}
 		if _, err := t.transact(stub, rei_fro); err != nil {
 			return nil, err
 		}
@@ -945,7 +956,7 @@ func (t *InsuranceFrontingChaincode) approveClaim(stub *shim.ChaincodeStub, poli
 			From:    c.Fronter,
 			To:      c.Affiliate,
 			Amt:     amount,
-			Purpose: claim_.PolicyID + claim_.ClaimID}
+			Purpose: "claim." + claim_.PolicyID + "." + claim_.ClaimID}
 		if _, err := t.transact(stub, fro_aff); err != nil {
 			return nil, err
 		}
@@ -982,12 +993,12 @@ func (t *InsuranceFrontingChaincode) getClaims(stub *shim.ChaincodeStub) (claims
 
 	for row := range rows {
 		result := claim{
-			PolicyID:            row.Columns[0].GetString_(),
-			ClaimID:             row.Columns[1].GetString_(),
-			Amt:                 row.Columns[2].GetUint64(),
-			ApprovedByCaptive:   row.Columns[3].GetBool(),
-			ApprovedByReinsurer: row.Columns[4].GetBool(),
-			ApprovedByFronter:   row.Columns[5].GetBool()}
+			PolicyID:  row.Columns[0].GetString_(),
+			ClaimID:   row.Columns[1].GetString_(),
+			Amt:       row.Columns[2].GetUint64(),
+			Captive:   row.Columns[3].GetString_(),
+			Reinsurer: row.Columns[4].GetString_(),
+			Fronter:   row.Columns[5].GetString_()}
 
 		policy_, err := t.getPolicy(stub, result.PolicyID)
 		if err != nil {
@@ -1208,5 +1219,6 @@ func (t *InsuranceFrontingChaincode) getPolicy(stub *shim.ChaincodeStub, policyI
 
 	return result, nil
 }
+
 
 
