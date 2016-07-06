@@ -1155,8 +1155,8 @@ func (t *InsuranceFrontingChaincode) updatePolicy(stub *shim.ChaincodeStub, poli
 			&shim.Column{Value: &shim.Column_String_{String_: policy_.PolicyID}},   // PolicyID      string
 			&shim.Column{Value: &shim.Column_Uint64{Uint64: policy_.Coverage}},     // Coverage      uint64
 			&shim.Column{Value: &shim.Column_Uint64{Uint64: policy_.Premium}},      // Premium       uint64
-			&shim.Column{Value: &shim.Column_Uint64{Uint64: 0}},                    // PaidClaim     uint64
-			&shim.Column{Value: &shim.Column_Uint64{Uint64: 0}},                    // PaidPremium   uint64
+			&shim.Column{Value: &shim.Column_Uint64{Uint64: policy_.PaidClaim}},    // PaidClaim     uint64
+			&shim.Column{Value: &shim.Column_Uint64{Uint64: policy_.PaidPremium}},  // PaidPremium   uint64
 			&shim.Column{Value: &shim.Column_Bytes{Bytes: frontingChain_}}},        // FrontingChain frontingChain
 	}); !ok {
 		return false, err
