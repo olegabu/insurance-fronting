@@ -784,8 +784,8 @@ func (t *InsuranceFrontingChaincode) createClaim(stub *shim.ChaincodeStub, polic
 		return chainJson, errors.New(message)
 	}
 
-	/* Update premium counters in policy and contract */
-	if policy_.PaidClaim += amount; policy_.PaidClaim > policy_.Coverage {
+	/* Check claim counters in policy and contract */
+	if (policy_.PaidClaim + amount) > policy_.Coverage {
 		message := "Claim is too high for policy " + policy_.PolicyID
 		log.Error(message)
 		return nil, errors.New(message)
