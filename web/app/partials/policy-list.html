@@ -17,7 +17,7 @@
     </tr>
   </tfoot>
   <tbody>
-	  <tr ng-repeat="p in ctl.list">
+	  <tr ng-repeat="p in ctl.list | orderBy:'-id'">
       <td>{{p.id}}</td>
       <td>{{p.contractId}}</td>
       <td>{{p.coverage | currency:"$":0}}</td>
@@ -55,7 +55,7 @@
   <div class="form-group">
     <label>contract</label>
     <select class="form-control" ng-model="ctl.contract"
-     ng-options="c as c.id for c in ctl.contracts"></select>
+     ng-options="c as (c.id+' '+c.captive+' '+c.reinsurer) for c in ctl.contracts"></select>
   </div>
   <div class="form-group">
     <label>coverage <span ng-show="ctl.contract">max: {{ctl.contract.maxCoverage - ctl.contract.currentTotalCoverage | currency:"$":0}}</span></label>
@@ -110,6 +110,8 @@ ng-click="ctl.ok()" ng-disabled="modalForm.$invalid">Join</button>
     <dd>{{ctl.policy.contractId}}</dd>
     <dt>policy</dt>
     <dd>{{ctl.policy.id}}</dd>
+    <dt>fronter</dt>
+    <dd>{{ctl.policy.frontingChain.fronter}}</dd>
     <dt>premium</dt>
     <dd>{{ctl.policy.premium | currency:"$":0}}</dd>
   </dl>

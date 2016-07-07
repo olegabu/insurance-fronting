@@ -7,60 +7,82 @@ function PeerService($log, $q, $http, cfg, IdentityService) {
 
   // jshint shadow: true
   var PeerService = this;
-
-  var payload = {
-      'jsonrpc': '2.0',
-      'params': {
-        'type': 1,
-        'chaincodeID': {
+  
+  var getPayload = function(method, functionName, functionArgs) {
+    return {
+      jsonrpc: '2.0',
+      method: method,
+      params: {
+        type: 1,
+        chaincodeID: {
           name: cfg.chaincodeID
         },
-        'ctorMsg': {}
+        ctorMsg: {
+          'function': functionName,
+          args: functionArgs
+        },
+        secureContext: IdentityService.getCurrent().id,
+        attributes: ['role', 'company']
       },
-      'id': 0
+      id: 1
+    };
+  };
+  
+  var logReject = function(d, o) {
+    $log.error(o);
+    d.reject(o);
   };
 
   var invoke = function(functionName, functionArgs) {
-    $log.debug('PeerService.invoke');
-
-    payload.method = 'invoke';
-    payload.params.ctorMsg['function'] = functionName;
-    payload.params.ctorMsg.args = functionArgs;
-    payload.secureContext = IdentityService.getCurrent().id;
-
-    $log.debug('payload', payload);
+    var payload = getPayload('invoke', functionName, functionArgs);
+    //$log.debug('payload', JSON.stringify(payload));
 
     return $http.post(cfg.endpoint, angular.copy(payload)).then(function(res) {
-      $log.debug('result', res.data.result);
+      //$log.debug('result', res.data.result);
     });
   };
 
   var query = function(functionName, functionArgs) {
-    $log.debug('PeerService.query');
-    
     var d = $q.defer();
 
-    payload.method = 'query';
-    payload.params.ctorMsg['function'] = functionName;
-    payload.params.ctorMsg.args = functionArgs;
-    payload.secureContext = IdentityService.getCurrent().id;
-
-    $log.debug('payload', payload);
+    var payload = getPayload('query', functionName, functionArgs);
+    //$log.debug('payload', JSON.stringify(payload));
 
     $http.post(cfg.endpoint, angular.copy(payload)).then(function(res) {
-      $log.debug('result', res.data.result);
-      d.resolve(res.data.result);
+      //$log.debug('result', res.data.result);
+      
+      if(res.data.error) {
+        logReject(d, res.data.error);
+      }
+      else if(res.data.result.status === 'OK') {
+        d.resolve(JSON.parse(res.data.result.message));
+      }
+      else {
+        logReject(d, res.data.result);
+      }
     });
 
     return d.promise;
+  };
+  
+  PeerService.getContracts = function() {
+    return query('getContracts', []);
   };
   
   PeerService.getPolicies = function() {
     return query('getPolicies', []);
   };
   
+  PeerService.getClaims = function() {
+    return query('getClaims', []);
+  };
+  
   PeerService.getTransactions = function() {
     return query('getTransactions', []);
+  };
+  
+  PeerService.getBalance = function() {
+    return query('getBalance', []);
   };
   
   PeerService.join = function(policyId) {
@@ -71,8 +93,17 @@ function PeerService($log, $q, $http, cfg, IdentityService) {
     return invoke('pay', [policyId]);
   };
   
-  PeerService.claim = function(policyId, claim) {
-    return invoke('claim', [policyId, claim]);
+  PeerService.createClaim = function(claim) {
+    return invoke('claim', [claim.policyId, '' + claim.amt]);
+  };
+  
+  PeerService.approve = function(claim) {
+    return invoke('approve', [claim.policyId, claim.id]);
+  };
+  
+  PeerService.createPolicy = function(p) {
+    return invoke('createPolicy', [p.contractId, 
+                                   '' + p.coverage, '' + p.premium]);
   };
 
 }

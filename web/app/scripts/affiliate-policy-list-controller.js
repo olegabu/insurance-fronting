@@ -13,7 +13,7 @@ function AffiliatePolicyListController($scope, $log, $interval, $uibModal,
   var ctl = this;
   
   ctl.canPay = function(policy) {
-    return policy.frontingChain.affiliate === ctl.user.id;
+    return policy.frontingChain.affiliate === ctl.user.company;
   };
   
   ctl.openPay = function(policy) {

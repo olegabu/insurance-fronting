@@ -15,18 +15,18 @@
     </tr>
   </tfoot>
   <tbody>
-	  <tr ng-repeat="c in ctl.list">
+	  <tr ng-repeat="c in ctl.list | orderBy:'-id'">
 	    <td>{{c.id}}</td>
       <td>{{c.policyId}}</td>
 			<td>{{c.amt | currency:"$":0}}</td>
 			<td>
 	      <dl class="dl-horizontal">
          <dt>captive</dt>
-         <dd>{{c.approvalChain.captive}}</dd>
+         <dd>{{c.captive}}</dd>
          <dt>reinsurer</dt>
-         <dd>{{c.approvalChain.reinsurer}}</dd>
+         <dd>{{c.reinsurer}}</dd>
          <dt>fronter</dt>
-         <dd>{{c.approvalChain.fronter}}</dd>
+         <dd>{{c.fronter}}</dd>
         </dl>
         <a class="btn btn-default btn-block" href ng-show="ctl.canApprove(c)" 
         ng-click="ctl.openApprove(c)" title="approve claim">
@@ -64,10 +64,10 @@ ng-click="ctl.ok()" ng-disabled="modalForm.$invalid">Approve</button>
   <div class="form-group">
     <label>policy</label>
     <select class="form-control" ng-model="ctl.policy"
-     ng-options="p as p.id for p in ctl.policies"></select>
+     ng-options="p as (p.id+' '+p.frontingChain.fronter) for p in ctl.policies"></select>
   </div>
   <div class="form-group">
-    <label>amount <span ng-show="ctl.policy">max: {{ctl.policy.coverage - ctl.policy.totalClaim | currency:"$":0}}</span></label>
+    <label>amount <span ng-show="ctl.policy">max: {{ctl.policy.coverage - ctl.policy.paidClaim | currency:"$":0}}</span></label>
     <input class="form-control" required 
     type="number" min="0"
     ng-model="ctl.claim.amt">

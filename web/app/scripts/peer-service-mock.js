@@ -93,10 +93,8 @@ function PeerService($log, $q, $http, $localStorage,
     policy.frontingChain[user.role] = user.id;
   };
 
-  PeerService.approve = function(claimId) {
+  PeerService.approve = function(claim) {
     var user = IdentityService.getCurrent();
-
-    var claim = getClaim(claimId);
 
     claim.approvalChain[user.role] = user.id;
     
@@ -163,6 +161,10 @@ function PeerService($log, $q, $http, $localStorage,
     policy.paidPremium += policy.premium;
     
     contract.currentPaidPremium += policy.premium;
+  };
+  
+  PeerService.getBalance = function() {
+    return IdentityService.getCurrent().balance;
   };
 
 }

@@ -7,11 +7,12 @@
       "name":"{{chaincodeName}}"
     },
     "ctorMsg": {
-      "function":"getContracts",
+      "function":"getTransactions",
       "args":[]
     },
     "secureContext": "bermuda",
     "attributes": ["role", "company"]
+
   },
   "id": 1
 }

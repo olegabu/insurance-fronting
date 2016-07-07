@@ -8,9 +8,22 @@ function ClaimListController($scope, $log, $interval, $uibModal,
 
   var ctl = this;
   
+  var policies;
+  
   var init = function() {
     PeerService.getClaims().then(function(list) {
       ctl.list = list;
+    });
+    PeerService.getPolicies().then(function(list) {
+      policies = _.filter(list, function(o) {
+        return o.frontingChain.fronter;
+      });
+    });
+  };
+  
+  var getPolicy = function(policyId) {
+    return _.find(policies, function(o) {
+      return o.id === policyId;
     });
   };
   
@@ -20,17 +33,19 @@ function ClaimListController($scope, $log, $interval, $uibModal,
 
   ctl.canApprove = function(claim) {
     var user = IdentityService.getCurrent();
-    var policy = PeerService.getPolicy(claim.policyId);
+    var policy = getPolicy(claim.policyId);
 
-    return (claim.approvalChain.captive && 
-              !claim.approvalChain.reinsurer && 
-              policy.frontingChain.reinsurer === user.id) || 
-        (!claim.approvalChain.captive && 
-            policy.frontingChain.captive === user.id) || 
-        (claim.approvalChain.captive && 
-            claim.approvalChain.reinsurer && 
-            !claim.approvalChain.fronter && 
-            policy.frontingChain.fronter === user.id);
+    return policy && (
+        (claim.captive && 
+              !claim.reinsurer && 
+              policy.frontingChain.reinsurer === user.company) || 
+        (!claim.captive && 
+            policy.frontingChain.captive === user.company) || 
+        (claim.captive && 
+            claim.reinsurer && 
+            !claim.fronter && 
+            policy.frontingChain.fronter === user.company)
+    );
   };
   
   ctl.openApprove = function(claim) {
@@ -45,7 +60,7 @@ function ClaimListController($scope, $log, $interval, $uibModal,
     });
 
     modalInstance.result.then(function() {
-      PeerService.approve(claim.id);
+      PeerService.approve(claim);
     });
   };
 
@@ -61,7 +76,7 @@ function ClaimListController($scope, $log, $interval, $uibModal,
       controller: 'ClaimModalController as ctl',
       resolve: {
         policies: function() {
-          return PeerService.getPolicies();
+          return policies;
         }
       }
     });

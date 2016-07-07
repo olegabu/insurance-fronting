@@ -10,7 +10,7 @@
 	  </tr>
   </thead>
   <tbody>
-	  <tr ng-repeat="c in ctl.list">
+	  <tr ng-repeat="c in ctl.list track by c.id">
       <td>{{c.id}}</td>
       <td><span ng-show="c.currentTotalCoverage">{{c.currentTotalCoverage | currency:"$":0}}
       <br>of<br>

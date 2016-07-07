@@ -1,18 +1,20 @@
 <table class="table">
-  <caption ng-show="ctl.user.role !== 'auditor'">
-    Balance of <em>{{ctl.user.role}}</em> {{ctl.user.id}}: 
-    <strong>{{ctl.user.balance | currency:"$":0}}</strong>
+  <caption ng-show="ctl.user.role !== 'auditor' && ctl.user.role !== 'bank'">
+    Balance of <em>{{ctl.user.role}}</em> {{ctl.user.company}}: 
+    <strong>{{ctl.balance | currency:"$":0}}</strong>
   </caption>
   <thead>
 	  <tr>
-	    <th>from</th>
+      <th>transaction</th>
+      <th>from</th>
       <th>to</th>
       <th>amount</th>
       <th>purpose</th>
 	  </tr>
   </thead>
   <tbody>
-	  <tr ng-repeat="t in ctl.list">
+	  <tr ng-repeat="t in ctl.list | orderBy:'id':true:ctl.compareInt">
+      <td>{{t.id}}</td>
       <td>{{t.from}}</td>
       <td>{{t.to}}</td>
       <td>{{t.amt | currency:"$":0}}</td>
