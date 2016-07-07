@@ -4,7 +4,7 @@
  * @ngInject
  */
 function ClaimListController($scope, $log, $interval, $uibModal, 
-    PeerService, IdentityService) {
+    cfg, PeerService, IdentityService) {
 
   var ctl = this;
   
@@ -29,7 +29,7 @@ function ClaimListController($scope, $log, $interval, $uibModal,
   
   $scope.$on('$viewContentLoaded', init);
   
-  $interval(init, 1000);
+  $interval(init, cfg.refresh);
 
   ctl.canApprove = function(claim) {
     var user = IdentityService.getCurrent();

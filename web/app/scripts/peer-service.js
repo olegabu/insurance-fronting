@@ -28,6 +28,10 @@ function PeerService($log, $q, $http, cfg, IdentityService) {
     };
   };
   
+  var getEndpoint = function() {
+    return IdentityService.getCurrent().endpoint;
+  };
+  
   var logReject = function(d, o) {
     $log.error(o);
     d.reject(o);
@@ -37,7 +41,7 @@ function PeerService($log, $q, $http, cfg, IdentityService) {
     var payload = getPayload('invoke', functionName, functionArgs);
     //$log.debug('payload', JSON.stringify(payload));
 
-    return $http.post(cfg.endpoint, angular.copy(payload)).then(function(res) {
+    return $http.post(getEndpoint(), angular.copy(payload)).then(function(res) {
       //$log.debug('result', res.data.result);
     });
   };
@@ -48,7 +52,7 @@ function PeerService($log, $q, $http, cfg, IdentityService) {
     var payload = getPayload('query', functionName, functionArgs);
     //$log.debug('payload', JSON.stringify(payload));
 
-    $http.post(cfg.endpoint, angular.copy(payload)).then(function(res) {
+    $http.post(getEndpoint(), angular.copy(payload)).then(function(res) {
       //$log.debug('result', res.data.result);
       
       if(res.data.error) {

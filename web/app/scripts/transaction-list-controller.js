@@ -4,7 +4,7 @@
  * @ngInject
  */
 function TransactionListController($scope, $log, $interval, 
-    PeerService, IdentityService) {
+    cfg, PeerService, IdentityService) {
 
   var ctl = this;
   
@@ -27,11 +27,11 @@ function TransactionListController($scope, $log, $interval,
   
   $scope.$on('$viewContentLoaded', init);
   
-  $interval(init, 1000);
+  $interval(init, cfg.refresh);
   
   ctl.compareInt = function(v1, v2) {
     return parseInt(v1.value) < parseInt(v2.value) ? -1 : 1;
-  }
+  };
   
 }
 

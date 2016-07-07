@@ -4,11 +4,11 @@
  * @ngInject
  */
 function AffiliatePolicyListController($scope, $log, $interval, $uibModal, 
-    PeerService, IdentityService) {
+    cfg, PeerService, IdentityService) {
   
   /*global PolicyListController*/
   PolicyListController.call(this, $scope, $log, $interval, $uibModal, 
-    PeerService, IdentityService);
+      cfg, PeerService, IdentityService);
 
   var ctl = this;
   

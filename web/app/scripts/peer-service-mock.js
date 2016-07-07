@@ -18,12 +18,6 @@ function PeerService($log, $q, $http, $localStorage,
     $storage.transactions.push(t);
   };
   
-  var getClaim = function(claimId) {
-    return _.find($storage.claims, function(o) {
-      return o.id === claimId;
-    });
-  };
-
   var getContract = function(contractId) {
     return _.find($storage.contracts, function(o) {
       return o.id === contractId;

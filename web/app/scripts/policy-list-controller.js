@@ -4,7 +4,7 @@
  * @ngInject
  */
 function PolicyListController($scope, $log, $interval, $uibModal, 
-    PeerService, IdentityService) {
+    cfg, PeerService, IdentityService) {
 
   var ctl = this;
   
@@ -18,7 +18,7 @@ function PolicyListController($scope, $log, $interval, $uibModal,
   
   $scope.$on('$viewContentLoaded', init);
   
-  $interval(init, 1000);
+  $interval(init, cfg.refresh);
   
   ctl.canCreate = function() {    
     return ctl.user && ctl.user.role === 'captive';

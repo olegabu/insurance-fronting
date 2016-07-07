@@ -4,7 +4,7 @@
  * @ngInject
  */
 function ContractListController($scope, $log, $interval, 
-    PeerService, IdentityService) {
+    cfg, PeerService, IdentityService) {
 
   var ctl = this;
   
@@ -16,7 +16,7 @@ function ContractListController($scope, $log, $interval,
   
   $scope.$on('$viewContentLoaded', init);
   
-  $interval(init, 1000);
+  $interval(init, cfg.refresh);
   
 }
 

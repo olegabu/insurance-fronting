@@ -1,41 +1,47 @@
 angular.module('config', [])
 .constant('cfg', {
-  endpoint: 'http://localhost:5000/chaincode',
+  refresh: 2000,
   chaincodeID: 'e0588c90defacf615671d8bddc960bf5fc4a540ffa0039fca30fbe2be8c75aeae40272b207c436ebe5be9657db60c52c99c3a1abd94f74f3beff6f2f6bb43177',
   users: [{
     id: 'bermuda', 
     role: 'captive',
     company: 'Bermuda',
+    endpoint: 'http://localhost:5000/chaincode',
     balance: 10000000
   },
   {
     id: 'art', 
     role: 'reinsurer',
     company: 'Art',
+    endpoint: 'http://localhost:5000/chaincode',
     balance: 0
   },
   {
     id: 'allianz', 
     role: 'fronter',
     company: 'Allianz',
+    endpoint: 'http://localhost:5000/chaincode',
     balance: 0
   },
   {
     id: 'nigeria', 
     role: 'affiliate',
     company: 'Nigeria',
+    endpoint: 'http://localhost:5000/chaincode',
     balance: 10000
   },
   {
     id: 'citi',  
     company: 'Citi',
     role: 'bank',
+    endpoint: 'http://localhost:5000/chaincode',
     balance: 100000000
   },
   {
     id: 'auditor',  
     company: 'Auditor',
     role: 'auditor',
+    endpoint: 'http://localhost:5000/chaincode',
     balance: 0
   }],
   contracts: [{
