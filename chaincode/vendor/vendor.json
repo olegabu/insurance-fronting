@@ -1,6 +1,37 @@
 {
 	"comment": "",
 	"ignore": "test",
-	"package": [],
+	"package": [
+		{
+			"checksumSHA1": "BoXdUBWB8UnSlFlbnuTQaPqfCGk=",
+			"path": "github.com/op/go-logging",
+			"revision": "970db520ece77730c7e4724c61121037378659d9",
+			"revisionTime": "2016-03-15T20:05:05Z"
+		},
+		{
+			"checksumSHA1": "6FPvEfscRGGViU4vyehlLyWFePw=",
+			"path": "github.com/spf13/viper",
+			"revision": "c1ccc378a054ea8d4e38d8c67f6938d4760b53dd",
+			"revisionTime": "2016-06-05T22:03:07Z"
+		},
+		{
+			"checksumSHA1": "+Gnn4EW8JO1ZBY1kR+q16ePQM0Q=",
+			"path": "google.golang.org/grpc",
+			"revision": "13edeeffdea7a41d5aad96c28deb4c7bd01a9397",
+			"revisionTime": "2016-07-11T23:17:12Z"
+		},
+		{
+			"checksumSHA1": "JqIrWCnExi5UVU+/K1i7g0lukY8=",
+			"path": "google.golang.org/grpc/credentials",
+			"revision": "13edeeffdea7a41d5aad96c28deb4c7bd01a9397",
+			"revisionTime": "2016-07-11T23:17:12Z"
+		},
+		{
+			"checksumSHA1": "3Lt5hNAG8qJAYSsNghR5uA1zQns=",
+			"path": "google.golang.org/grpc/grpclog",
+			"revision": "13edeeffdea7a41d5aad96c28deb4c7bd01a9397",
+			"revisionTime": "2016-07-11T23:17:12Z"
+		}
+	],
 	"rootPath": "github.com/olegabu/insurance-fronting/chaincode"
 }
