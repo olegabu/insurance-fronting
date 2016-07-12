@@ -1,0 +1,537 @@
+{
+	"variables": [],
+	"info": {
+		"name": "insurance-fronting",
+		"_postman_id": "2ac52c06-915a-b424-43b0-ec368464e8cc",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "login citi",
+			"request": {
+				"url": "{{url}}/registrar",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"enrollId\": \"citi\",\n  \"enrollSecret\": \"4nXSrfoYGFCP\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "login bermuda",
+			"request": {
+				"url": "{{url}}/registrar",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"enrollId\": \"bermuda\",\n  \"enrollSecret\": \"b7pmSxzKNFiw\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "login auditor",
+			"request": {
+				"url": "{{url}}/registrar",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"enrollId\": \"auditor\",\n  \"enrollSecret\": \"yg5DVhm0er1z\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "login art",
+			"request": {
+				"url": "{{url}}/registrar",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"enrollId\": \"art\",\n  \"enrollSecret\": \"YsWZD4qQmYxo\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "login allianz",
+			"request": {
+				"url": "{{url}}/registrar",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"enrollId\": \"allianz\",\n  \"enrollSecret\": \"W8G0usrU7jRk\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "login nigeria",
+			"request": {
+				"url": "{{url}}/registrar",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"enrollId\": \"nigeria\",\n  \"enrollSecret\": \"H80SiB5ODKKQ\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "deploy local",
+			"request": {
+				"url": "{{url}}/chaincode",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"deploy\",\n  \"params\": {\n    \"type\": 1,\n    \"chaincodeID\": {\n      \"path\": \"github.com/olegabu/insurance-fronting/chaincode\"\n    },\n    \"ctorMsg\": {\n      \"function\": \"string\",\n      \"args\": [\n               \"string\"\n               ]\n    },\n    \"secureContext\": \"citi\",\n    \"attributes\": [\"role\", \"company\"]\n  },\n  \"id\": 0\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "demoInit",
+			"request": {
+				"url": "{{url}}/chaincode",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"invoke\",\n  \"params\": {\n    \"type\": 1,\n    \"chaincodeID\": {\n      \"name\": \"{{chaincodeName}}\"\n    },\n    \"ctorMsg\": {\n      \"function\": \"demoInit\",\n      \"args\": []\n    },\n    \"secureContext\": \"citi\",\n    \"attributes\": [\"role\", \"company\"]\n  },\n  \"id\": 0\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "getContracts bermuda",
+			"request": {
+				"url": "{{url}}/chaincode",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"query\",\n  \"params\": {\n    \"type\": 1,\n    \"chaincodeID\":{\n      \"name\":\"{{chaincodeName}}\"\n    },\n    \"ctorMsg\": {\n      \"function\":\"getContracts\",\n      \"args\":[]\n    },\n    \"secureContext\": \"bermuda\",\n    \"attributes\": [\"role\", \"company\"]\n\n  },\n  \"id\": 1\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "getContracts art",
+			"request": {
+				"url": "{{url}}/chaincode",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"query\",\n  \"params\": {\n    \"type\": 1,\n    \"chaincodeID\":{\n      \"name\":\"{{chaincodeName}}\"\n    },\n    \"ctorMsg\": {\n      \"function\":\"getContracts\",\n      \"args\":[]\n    },\n    \"secureContext\": \"art\",\n    \"attributes\": [\"role\", \"company\"]\n\n  },\n  \"id\": 1\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "createPolicy",
+			"request": {
+				"url": "{{url}}/chaincode",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"invoke\",\n  \"params\": {\n    \"type\": 1,\n    \"chaincodeID\":{\n      \"name\":\"{{chaincodeName}}\"\n    },\n    \"ctorMsg\": {\n      \"function\":\"createPolicy\",\n      \"args\":[\"1\", \"1000000\", \"100\"]\n    },\n    \"secureContext\": \"bermuda\",\n    \"attributes\": [\"role\", \"company\"]\n\n  },\n  \"id\": 1\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "getPolicies bermuda",
+			"request": {
+				"url": "{{url}}/chaincode",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"query\",\n  \"params\": {\n    \"type\": 1,\n    \"chaincodeID\":{\n      \"name\":\"{{chaincodeName}}\"\n    },\n    \"ctorMsg\": {\n      \"function\":\"getPolicies\",\n      \"args\":[]\n    },\n    \"secureContext\": \"bermuda\",\n    \"attributes\": [\"role\", \"company\"]\n\n  },\n  \"id\": 5\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "join allianz",
+			"request": {
+				"url": "{{url}}/chaincode",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"jsonrpc\":\"2.0\",\n  \"method\":\"invoke\",\n  \"params\":{\"type\":1,\"chaincodeID\":{\"name\":\"{{chaincodeName}}\"},\n    \"ctorMsg\":{\"function\":\"join\",\"args\":[\"1.1\"]},\n    \"secureContext\":\"allianz\",\n    \"attributes\":[\"role\",\"company\"]},\n    \"id\":1\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "getPolicies allianz",
+			"request": {
+				"url": "{{url}}/chaincode",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"query\",\n  \"params\": {\n    \"type\": 1,\n    \"chaincodeID\":{\n      \"name\":\"{{chaincodeName}}\"\n    },\n    \"ctorMsg\": {\n      \"function\":\"getPolicies\",\n      \"args\":[]\n    },\n    \"secureContext\": \"allianz\",\n    \"attributes\": [\"role\", \"company\"]\n\n  },\n  \"id\": 5\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "join nigeria",
+			"request": {
+				"url": "{{url}}/chaincode",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"jsonrpc\":\"2.0\",\n  \"method\":\"invoke\",\n  \"params\":{\"type\":1,\"chaincodeID\":{\"name\":\"{{chaincodeName}}\"},\n    \"ctorMsg\":{\"function\":\"join\",\"args\":[\"1.1\"]},\n    \"secureContext\":\"nigeria\",\n    \"attributes\":[\"role\",\"company\"]},\n    \"id\":1\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "getPolicies nigeria",
+			"request": {
+				"url": "{{url}}/chaincode",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"query\",\n  \"params\": {\n    \"type\": 1,\n    \"chaincodeID\":{\n      \"name\":\"{{chaincodeName}}\"\n    },\n    \"ctorMsg\": {\n      \"function\":\"getPolicies\",\n      \"args\":[]\n    },\n    \"secureContext\": \"nigeria\",\n    \"attributes\": [\"role\", \"company\"]\n\n  },\n  \"id\": 5\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "pay",
+			"request": {
+				"url": "{{url}}/chaincode",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"jsonrpc\":\"2.0\",\n  \"method\":\"invoke\",\n  \"params\":{\"type\":1,\"chaincodeID\":{\"name\":\"{{chaincodeName}}\"},\n    \"ctorMsg\":{\"function\":\"pay\",\"args\":[\"1.1\"]},\n    \"secureContext\":\"nigeria\",\n    \"attributes\":[\"role\",\"company\"]},\n    \"id\":1\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "getTransactions bermuda",
+			"request": {
+				"url": "{{url}}/chaincode",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"query\",\n  \"params\": {\n    \"type\": 1,\n    \"chaincodeID\":{\n      \"name\":\"{{chaincodeName}}\"\n    },\n    \"ctorMsg\": {\n      \"function\":\"getTransactions\",\n      \"args\":[]\n    },\n    \"secureContext\": \"bermuda\",\n    \"attributes\": [\"role\", \"company\"]\n\n  },\n  \"id\": 1\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "claim",
+			"request": {
+				"url": "{{url}}/chaincode",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"jsonrpc\":\"2.0\",\n  \"method\":\"invoke\",\n  \"params\":{\"type\":1,\"chaincodeID\":{\"name\":\"{{chaincodeName}}\"},\n    \"ctorMsg\":{\"function\":\"claim\",\"args\":[\"1.1\", \"100000\"]},\n    \"secureContext\":\"nigeria\",\n    \"attributes\":[\"role\",\"company\"]},\n    \"id\":1\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "getClaims",
+			"request": {
+				"url": "{{url}}/chaincode",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"query\",\n  \"params\": {\n    \"type\": 1,\n    \"chaincodeID\":{\n      \"name\":\"{{chaincodeName}}\"\n    },\n    \"ctorMsg\": {\n      \"function\":\"getClaims\",\n      \"args\":[]\n    },\n    \"secureContext\": \"bermuda\",\n    \"attributes\": [\"role\", \"company\"]\n\n  },\n  \"id\": 1\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "approve bermuda",
+			"request": {
+				"url": "{{url}}/chaincode",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"jsonrpc\":\"2.0\",\n  \"method\":\"invoke\",\n  \"params\":{\"type\":1,\"chaincodeID\":{\"name\":\"{{chaincodeName}}\"},\n    \"ctorMsg\":{\"function\":\"approve\",\"args\":[\"1.1\", \"1\"]},\n    \"secureContext\":\"bermuda\",\n    \"attributes\":[\"role\",\"company\"]},\n    \"id\":1\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "approve art",
+			"request": {
+				"url": "{{url}}/chaincode",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"jsonrpc\":\"2.0\",\n  \"method\":\"invoke\",\n  \"params\":{\"type\":1,\"chaincodeID\":{\"name\":\"{{chaincodeName}}\"},\n    \"ctorMsg\":{\"function\":\"approve\",\"args\":[\"1.1\", \"1\"]},\n    \"secureContext\":\"art\",\n    \"attributes\":[\"role\",\"company\"]},\n    \"id\":1\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "approve allianz",
+			"request": {
+				"url": "{{url}}/chaincode",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"jsonrpc\":\"2.0\",\n  \"method\":\"invoke\",\n  \"params\":{\"type\":1,\"chaincodeID\":{\"name\":\"{{chaincodeName}}\"},\n    \"ctorMsg\":{\"function\":\"approve\",\"args\":[\"1.1\", \"1\"]},\n    \"secureContext\":\"allianz\",\n    \"attributes\":[\"role\",\"company\"]},\n    \"id\":1\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "getBalance bermuda",
+			"request": {
+				"url": "{{url}}/chaincode",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"query\",\n  \"params\": {\n    \"type\": 1,\n    \"chaincodeID\":{\n      \"name\":\"{{chaincodeName}}\"\n    },\n    \"ctorMsg\": {\n      \"function\":\"getBalance\",\n      \"args\":[]\n    },\n    \"secureContext\": \"bermuda\",\n    \"attributes\": [\"role\", \"company\"]\n\n  },\n  \"id\": 1\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "getBalance nigeria",
+			"request": {
+				"url": "{{url}}/chaincode",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"query\",\n  \"params\": {\n    \"type\": 1,\n    \"chaincodeID\":{\n      \"name\":\"{{chaincodeName}}\"\n    },\n    \"ctorMsg\": {\n      \"function\":\"getBalance\",\n      \"args\":[]\n    },\n    \"secureContext\": \"nigeria\",\n    \"attributes\": [\"role\", \"company\"]\n\n  },\n  \"id\": 1\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "getTransactions auditor",
+			"request": {
+				"url": "{{url}}/chaincode",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"method\": \"query\",\n  \"params\": {\n    \"type\": 1,\n    \"chaincodeID\":{\n      \"name\":\"{{chaincodeName}}\"\n    },\n    \"ctorMsg\": {\n      \"function\":\"getTransactions\",\n      \"args\":[]\n    },\n    \"secureContext\": \"auditor\",\n    \"attributes\": [\"role\", \"company\"]\n\n  },\n  \"id\": 1\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "chain",
+			"request": {
+				"url": "{{url}}/chain",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "blocks",
+			"request": {
+				"url": "{{url}}/chain/blocks/1",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "registrar bermuda",
+			"request": {
+				"url": "{{url}}/registrar/bermuda",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
