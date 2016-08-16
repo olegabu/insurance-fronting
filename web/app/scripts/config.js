@@ -1,47 +1,47 @@
 angular.module('config', [])
 .constant('cfg', {
   refresh: 2000,
-  chaincodeID: 'e0588c90defacf615671d8bddc960bf5fc4a540ffa0039fca30fbe2be8c75aeae40272b207c436ebe5be9657db60c52c99c3a1abd94f74f3beff6f2f6bb43177',
+  chaincodeID: '61fc9184862f93176c08f049d3e512b6909edf39e1fcf0ab2d8bf7529ac9993125eba0b6faafcdacba99d903969a3031d9b0e2d1b0dce55bb43ec82a90ff82a1',
   users: [{
     id: 'bermuda', 
     role: 'captive',
     company: 'Bermuda',
-    endpoint: 'http://localhost:5000/chaincode',
+    endpoint: 'http://54.210.64.11:5000/chaincode',
     balance: 10000000
   },
   {
     id: 'art', 
     role: 'reinsurer',
     company: 'Art',
-    endpoint: 'http://localhost:5000/chaincode',
+    endpoint: 'http://52.91.72.177:5000/chaincode',
     balance: 0
   },
   {
     id: 'allianz', 
     role: 'fronter',
     company: 'Allianz',
-    endpoint: 'http://localhost:5000/chaincode',
+    endpoint: 'http://54.198.39.96:5000/chaincode',
     balance: 0
   },
   {
     id: 'nigeria', 
     role: 'affiliate',
     company: 'Nigeria',
-    endpoint: 'http://localhost:5000/chaincode',
+    endpoint: 'http://54.175.130.125:5000/chaincode',
     balance: 10000
   },
   {
     id: 'citi',  
     company: 'Citi',
     role: 'bank',
-    endpoint: 'http://localhost:5000/chaincode',
+    endpoint: 'http://54.210.64.11:5000/chaincode',
     balance: 100000000
   },
   {
     id: 'auditor',  
     company: 'Auditor',
     role: 'auditor',
-    endpoint: 'http://localhost:5000/chaincode',
+    endpoint: 'http://54.210.64.11:5000/chaincode',
     balance: 0
   }],
   contracts: [{
