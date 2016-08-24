@@ -7,8 +7,7 @@
       "path": "github.com/olegabu/insurance-fronting/chaincode"
     },
     "ctorMsg": {
-      "function": "init",
-      "args": []
+      "args": ["aW5pdA=="]
     },
     "secureContext": "citi",
     "attributes": ["role", "company"]
