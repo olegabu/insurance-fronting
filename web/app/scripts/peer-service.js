@@ -18,8 +18,7 @@ function PeerService($log, $q, $http, cfg, IdentityService) {
           name: cfg.chaincodeID
         },
         ctorMsg: {
-          'function': functionName,
-          args: functionArgs
+          args: encodeToBase64(functionName, functionArgs)
         },
         secureContext: IdentityService.getCurrent().id,
         attributes: ['role', 'company']
@@ -111,6 +110,15 @@ function PeerService($log, $q, $http, cfg, IdentityService) {
   };
 
 }
+
+
+var encodeToBase64 = function(functionName, functionArgs) {
+    functionArgs.splice(0, 0, functionName);
+    for (var i = 0; i < functionArgs.length; i++) {
+        functionArgs[i] = btoa(functionArgs[i]);
+    }
+    return functionArgs
+};
 
 
 angular.module('peerService', []).service('PeerService', PeerService);
