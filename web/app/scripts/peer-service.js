@@ -117,7 +117,7 @@ var encodeToBase64 = function(functionName, functionArgs) {
     for (var i = 0; i < functionArgs.length; i++) {
         functionArgs[i] = btoa(functionArgs[i]);
     }
-    return functionArgs
+    return functionArgs;
 };
 
 

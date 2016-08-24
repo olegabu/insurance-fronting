@@ -65,7 +65,7 @@ type transaction struct {
 }
 
 // Init creates Policy and Transaction tables in Ledger
-func (t *InsuranceFrontingChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (t *InsuranceFrontingChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	log.Debugf("function: %s, args: %s", function, args)
 
 	// Create contracts table
@@ -151,7 +151,7 @@ func (t *InsuranceFrontingChaincode) Init(stub *shim.ChaincodeStub, function str
 }
 
 // Invoke executes function on Ledger
-func (t *InsuranceFrontingChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (t *InsuranceFrontingChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	log.Debugf("function: %s, args: %s", function, args)
 
 	// Handle different functions
@@ -240,7 +240,7 @@ func (t *InsuranceFrontingChaincode) Invoke(stub *shim.ChaincodeStub, function s
 }
 
 // Query callback representing the query of a chaincode
-func (t *InsuranceFrontingChaincode) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (t *InsuranceFrontingChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	log.Debugf("function: %s, args: %s", function, args)
 
 	// Handle different functions
@@ -333,7 +333,7 @@ func main() {
 	}
 }
 
-func (t *InsuranceFrontingChaincode) demoInit(stub *shim.ChaincodeStub) ([]byte, error) {
+func (t *InsuranceFrontingChaincode) demoInit(stub shim.ChaincodeStubInterface) ([]byte, error) {
 	/*	Create example policies 	*/
 	log.Debug("Create example contract.")
 
@@ -380,7 +380,7 @@ func (t *InsuranceFrontingChaincode) demoInit(stub *shim.ChaincodeStub) ([]byte,
 	return nil, nil
 }
 
-func (t *InsuranceFrontingChaincode) incrementAndGetCounter(stub *shim.ChaincodeStub, counterName string) (result uint64, err error) {
+func (t *InsuranceFrontingChaincode) incrementAndGetCounter(stub shim.ChaincodeStubInterface, counterName string) (result uint64, err error) {
 	if contractIDBytes, err := stub.GetState(counterName); err != nil {
 		log.Errorf("Failed retrieving %s.", counterName)
 		return result, err
@@ -395,7 +395,7 @@ func (t *InsuranceFrontingChaincode) incrementAndGetCounter(stub *shim.Chaincode
 	return result, err
 }
 
-func (t *InsuranceFrontingChaincode) createContract(stub *shim.ChaincodeStub, contract_ contract) ([]byte, error) {
+func (t *InsuranceFrontingChaincode) createContract(stub shim.ChaincodeStubInterface, contract_ contract) ([]byte, error) {
 	counter, err := t.incrementAndGetCounter(stub, "ContractsCounter")
 	if err != nil {
 		return nil, err
@@ -422,7 +422,7 @@ func (t *InsuranceFrontingChaincode) createContract(stub *shim.ChaincodeStub, co
 	return nil, nil
 }
 
-func (t *InsuranceFrontingChaincode) updateContract(stub *shim.ChaincodeStub, contract_ contract) ([]byte, error) {
+func (t *InsuranceFrontingChaincode) updateContract(stub shim.ChaincodeStubInterface, contract_ contract) ([]byte, error) {
 	if ok, err := stub.ReplaceRow("Contracts", shim.Row{
 		Columns: []*shim.Column{
 			&shim.Column{Value: &shim.Column_String_{String_: contract_.ID}},
@@ -442,7 +442,7 @@ func (t *InsuranceFrontingChaincode) updateContract(stub *shim.ChaincodeStub, co
 	return nil, nil
 }
 
-func (t *InsuranceFrontingChaincode) getContracts(stub *shim.ChaincodeStub) (contracts []contract, err error) {
+func (t *InsuranceFrontingChaincode) getContracts(stub shim.ChaincodeStubInterface) (contracts []contract, err error) {
 	rows, err := stub.GetRows("Contracts", []shim.Column{})
 	if err != nil {
 		message := "Failed retrieving contracts. Error: " + err.Error()
@@ -477,7 +477,7 @@ func (t *InsuranceFrontingChaincode) getContracts(stub *shim.ChaincodeStub) (con
 	return contracts, nil
 }
 
-func (t *InsuranceFrontingChaincode) getContract(stub *shim.ChaincodeStub, contractID string) (contract, error) {
+func (t *InsuranceFrontingChaincode) getContract(stub shim.ChaincodeStubInterface, contractID string) (contract, error) {
 	log.Debugf("Getting contract for contractID %v", contractID)
 
 	var columns []shim.Column
@@ -507,7 +507,7 @@ func (t *InsuranceFrontingChaincode) getContract(stub *shim.ChaincodeStub, contr
 	return result, nil
 }
 
-func (t *InsuranceFrontingChaincode) getCallerCompany(stub *shim.ChaincodeStub) (string, error) {
+func (t *InsuranceFrontingChaincode) getCallerCompany(stub shim.ChaincodeStubInterface) (string, error) {
 	callerCompany, err := stub.ReadCertAttribute("company")
 	if err != nil {
 		log.Error("Failed fetching caller's company. Error: " + err.Error())
@@ -517,7 +517,7 @@ func (t *InsuranceFrontingChaincode) getCallerCompany(stub *shim.ChaincodeStub) 
 	return string(callerCompany), nil
 }
 
-func (t *InsuranceFrontingChaincode) getCallerRole(stub *shim.ChaincodeStub) (string, error) {
+func (t *InsuranceFrontingChaincode) getCallerRole(stub shim.ChaincodeStubInterface) (string, error) {
 	callerRole, err := stub.ReadCertAttribute("role")
 	if err != nil {
 		log.Error("Failed fetching caller role. Error: " + err.Error())
@@ -527,7 +527,7 @@ func (t *InsuranceFrontingChaincode) getCallerRole(stub *shim.ChaincodeStub) (st
 	return string(callerRole), nil
 }
 
-func (t *InsuranceFrontingChaincode) joinChain(stub *shim.ChaincodeStub, policyID string) ([]byte, error) {
+func (t *InsuranceFrontingChaincode) joinChain(stub shim.ChaincodeStubInterface, policyID string) ([]byte, error) {
 	log.Debugf("function: %s, args: %s", "join", policyID)
 
 	role, err := t.getCallerRole(stub)
@@ -564,7 +564,7 @@ func (t *InsuranceFrontingChaincode) joinChain(stub *shim.ChaincodeStub, policyI
 	return json.Marshal(policy_)
 }
 
-func (t *InsuranceFrontingChaincode) emitCoins(stub *shim.ChaincodeStub, companyName string, amount uint64) ([]byte, error) {
+func (t *InsuranceFrontingChaincode) emitCoins(stub shim.ChaincodeStubInterface, companyName string, amount uint64) ([]byte, error) {
 	log.Debug("Emitting coins for " + companyName)
 
 	callerRole, err := t.getCallerRole(stub)
@@ -598,7 +598,7 @@ func (t *InsuranceFrontingChaincode) emitCoins(stub *shim.ChaincodeStub, company
 	return nil, nil
 }
 
-func (t *InsuranceFrontingChaincode) getBalance(stub *shim.ChaincodeStub) ([]byte, error) {
+func (t *InsuranceFrontingChaincode) getBalance(stub shim.ChaincodeStubInterface) ([]byte, error) {
 	companyName, err := t.getCallerCompany(stub)
 	if err != nil {
 		return nil, err
@@ -619,7 +619,7 @@ func (t *InsuranceFrontingChaincode) getBalance(stub *shim.ChaincodeStub) ([]byt
 	return json.Marshal(balance)
 }
 
-func (t *InsuranceFrontingChaincode) transact(stub *shim.ChaincodeStub, transaction_ transaction) ([]byte, error) {
+func (t *InsuranceFrontingChaincode) transact(stub shim.ChaincodeStubInterface, transaction_ transaction) ([]byte, error) {
 	b, _ := json.Marshal(transaction_)
 	log.Debug("Started transaction: " + string(b))
 
@@ -678,7 +678,7 @@ func (t *InsuranceFrontingChaincode) transact(stub *shim.ChaincodeStub, transact
 	return nil, nil
 }
 
-func (t *InsuranceFrontingChaincode) payPremium(stub *shim.ChaincodeStub, policyID string) ([]byte, error) {
+func (t *InsuranceFrontingChaincode) payPremium(stub shim.ChaincodeStubInterface, policyID string) ([]byte, error) {
 	/* Get the policy to pay premium for */
 	policy_, err := t.getPolicy(stub, policyID)
 	if err != nil {
@@ -749,7 +749,7 @@ func (t *InsuranceFrontingChaincode) payPremium(stub *shim.ChaincodeStub, policy
 	return nil, nil
 }
 
-func (t *InsuranceFrontingChaincode) createClaim(stub *shim.ChaincodeStub, policyID string, amount uint64) ([]byte, error) {
+func (t *InsuranceFrontingChaincode) createClaim(stub shim.ChaincodeStubInterface, policyID string, amount uint64) ([]byte, error) {
 	/* Get the policy to claim for */
 	policy_, err := t.getPolicy(stub, policyID)
 	if err != nil {
@@ -823,7 +823,7 @@ func (t *InsuranceFrontingChaincode) createClaim(stub *shim.ChaincodeStub, polic
 	return nil, nil
 }
 
-func (t *InsuranceFrontingChaincode) updateClaim(stub *shim.ChaincodeStub, claim_ claim) (bool, error) {
+func (t *InsuranceFrontingChaincode) updateClaim(stub shim.ChaincodeStubInterface, claim_ claim) (bool, error) {
 	return stub.ReplaceRow("Claims", shim.Row{
 		Columns: []*shim.Column{
 			&shim.Column{Value: &shim.Column_String_{String_: claim_.PolicyID}},
@@ -835,7 +835,7 @@ func (t *InsuranceFrontingChaincode) updateClaim(stub *shim.ChaincodeStub, claim
 	})
 }
 
-func (t *InsuranceFrontingChaincode) getClaim(stub *shim.ChaincodeStub, policyID string, claimID string) (claim, error) {
+func (t *InsuranceFrontingChaincode) getClaim(stub shim.ChaincodeStubInterface, policyID string, claimID string) (claim, error) {
 	log.Debugf("Getting claim for claimID %v", claimID)
 
 	var columns []shim.Column
@@ -862,7 +862,7 @@ func (t *InsuranceFrontingChaincode) getClaim(stub *shim.ChaincodeStub, policyID
 	return result, nil
 }
 
-func (t *InsuranceFrontingChaincode) approveClaim(stub *shim.ChaincodeStub, policyID string, claimID string) ([]byte, error) {
+func (t *InsuranceFrontingChaincode) approveClaim(stub shim.ChaincodeStubInterface, policyID string, claimID string) ([]byte, error) {
 	/* Get the policy */
 	policy_, err := t.getPolicy(stub, policyID)
 	if err != nil {
@@ -978,7 +978,7 @@ func (t *InsuranceFrontingChaincode) approveClaim(stub *shim.ChaincodeStub, poli
 	return nil, nil
 }
 
-func (t *InsuranceFrontingChaincode) getClaims(stub *shim.ChaincodeStub) (claims []claim, err error) {
+func (t *InsuranceFrontingChaincode) getClaims(stub shim.ChaincodeStubInterface) (claims []claim, err error) {
 	rows, err := stub.GetRows("Claims", []shim.Column{})
 	if err != nil {
 		message := "Failed retrieving claims. Error: " + err.Error()
@@ -1017,7 +1017,7 @@ func (t *InsuranceFrontingChaincode) getClaims(stub *shim.ChaincodeStub) (claims
 	return claims, nil
 }
 
-func (t *InsuranceFrontingChaincode) getPolicies(stub *shim.ChaincodeStub, contractID string) ([]policy, error) {
+func (t *InsuranceFrontingChaincode) getPolicies(stub shim.ChaincodeStubInterface, contractID string) ([]policy, error) {
 	var columns []shim.Column
 	if contractID != "" {
 		columnContractIDs := shim.Column{Value: &shim.Column_String_{String_: contractID}}
@@ -1063,7 +1063,7 @@ func (t *InsuranceFrontingChaincode) getPolicies(stub *shim.ChaincodeStub, contr
 	return policies, nil
 }
 
-func (t *InsuranceFrontingChaincode) getTransactions(stub *shim.ChaincodeStub) ([]transaction, error) {
+func (t *InsuranceFrontingChaincode) getTransactions(stub shim.ChaincodeStubInterface) ([]transaction, error) {
 	callerCompany, err := t.getCallerCompany(stub)
 	if err != nil {
 		return nil, err
@@ -1099,7 +1099,7 @@ func (t *InsuranceFrontingChaincode) getTransactions(stub *shim.ChaincodeStub) (
 	return transactions, nil
 }
 
-func (t *InsuranceFrontingChaincode) createPolicy(stub *shim.ChaincodeStub, contractID string, coverage uint64, premium uint64) (bool, error) {
+func (t *InsuranceFrontingChaincode) createPolicy(stub shim.ChaincodeStubInterface, contractID string, coverage uint64, premium uint64) (bool, error) {
 	contract_, err := t.getContract(stub, contractID)
 	if err != nil {
 		return false, err
@@ -1152,7 +1152,7 @@ func (t *InsuranceFrontingChaincode) createPolicy(stub *shim.ChaincodeStub, cont
 	return true, nil
 }
 
-func (t *InsuranceFrontingChaincode) updatePolicy(stub *shim.ChaincodeStub, policy_ policy) (bool, error) {
+func (t *InsuranceFrontingChaincode) updatePolicy(stub shim.ChaincodeStubInterface, policy_ policy) (bool, error) {
 	frontingChain_, err := json.Marshal(policy_.FrontingChain)
 	if err != nil {
 		message := "Failed marshalling fronting chain for policy ID: " + policy_.PolicyID + ". Error: " + err.Error()
@@ -1176,7 +1176,7 @@ func (t *InsuranceFrontingChaincode) updatePolicy(stub *shim.ChaincodeStub, poli
 	}
 }
 
-func (t *InsuranceFrontingChaincode) getPolicy(stub *shim.ChaincodeStub, policyID string) (policy, error) {
+func (t *InsuranceFrontingChaincode) getPolicy(stub shim.ChaincodeStubInterface, policyID string) (policy, error) {
 	log.Debugf("Getting policy for policyID %v", policyID)
 
 	columnNames := strings.Split(policyID, ".")
